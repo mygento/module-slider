@@ -94,12 +94,14 @@ class DataProvider extends ModifierPoolDataProvider
                     48,
                     48,
                 );
-                $banner['small_image'] = $this->service->resizeAndConvert(
-                    $item->getSmallImage(),
-                    null,
-                    48,
-                    48,
-                );
+                if ($item->getSmallImage()) {
+                    $banner['small_image'] = $this->service->resizeAndConvert(
+                        $item->getSmallImage(),
+                        null,
+                        48,
+                        48,
+                    );
+                }
             } catch (LocalizedException) {
                 $banner['image'] = $this->getUrl($item->getData(BannerInterface::IMAGE));
                 $banner['small_image'] = $this->getUrl($item->getData(BannerInterface::SMALL_IMAGE));

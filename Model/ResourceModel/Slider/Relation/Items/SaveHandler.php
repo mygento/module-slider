@@ -75,7 +75,7 @@ class SaveHandler implements ExtensionInterface
     {
         $result = [];
         foreach ($banners as $b) {
-            $result[$b['banner_id']] = $b['position'];
+            $result[$b['id']] = $b['position'];
         }
 
         return $result;
