@@ -28,7 +28,7 @@ class ProductSliderList implements OptionSourceInterface
         /** @var ProductSliderInterface $slider */
         foreach ($sliders->getItems() as $slider) {
             $optionArray[] = [
-                'value' => $slider->getId(),
+                'value' => $slider->getIdentity(),
                 'label' => $slider->getIdentity(),
             ];
         }
