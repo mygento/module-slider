@@ -65,6 +65,32 @@ class BannerSlider extends Template implements BlockInterface
         return $this->getSlider()?->getOptionsList() ?? [];
     }
 
+    public function getThumbnailsOptions(): string
+    {
+        $options = $this->getOptions();
+
+        if (!$options['thumbnails']) {
+            return '{}';
+        }
+
+        $thumbnailsOptions = [
+            'rewind' => $options['thumbnails_rewind'],
+            'pagination' => $options['thumbnails_pagination'],
+            'isNavigation' => $options['thumbnails_isNavigation'],
+            'arrows' => $options['thumbnails_arrows'],
+        ];
+
+        if ($options['thumbnails_gap']) {
+            $thumbnailsOptions['gap'] = (int) $options['thumbnails_gap'];
+        }
+
+        if ($options['thumbnails_fixedWidth']) {
+            $thumbnailsOptions['fixedWidth'] = (int) $options['thumbnails_fixedWidth'];
+        }
+
+        return json_encode($thumbnailsOptions, true);
+    }
+
     public function getImages(): array
     {
         $options = $this->getSlider()->getOptionsList();
