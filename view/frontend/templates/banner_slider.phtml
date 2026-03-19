@@ -75,7 +75,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
         </ul>
     </div>
 </section>
-<?php if ($options['thumbnails']): ?>
+<?php if ($block->hasThumbnails()): ?>
     <section id="thumbnail-<?= $block->getSliderIdentifier() ?>" class="splide">
     <div class="splide__track">
         <ul class="splide__list">
@@ -99,7 +99,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
             "interval": <?= (int) ($options['autoplay_interval'] ?? 4000) ?>,
             "perPage": <?= (int) ($options['per_page'] ?? 1) ?>,
             "type": "<?= ($options['infinite'] ?? true) ? 'loop' : 'slide' ?>"
-            <?php if ($options['thumbnails']):?>
+            <?php if ($block->hasThumbnails()):?>
               ,"thumbnailsElement": "#thumbnail-<?= $block->getSliderIdentifier() ?>"
               ,"thumbnails": <?= $block->getThumbnailsOptions()?>
             <?php endif;?>
