@@ -52,6 +52,22 @@ class ProductSliderRepository implements ProductSliderRepositoryInterface
     }
 
     /**
+     * @inheirtDoc
+     */
+    public function getByIdentity(string $identity): ProductSliderInterface
+    {
+        $entity = $this->entityFactory->create();
+        $this->resource->loadByIdentity($entity, $identity);
+        if (!$entity->getId()) {
+            throw new NoSuchEntityException(
+                __('A Slider with identity "%1" does not exist', $identity),
+            );
+        }
+
+        return $entity;
+    }
+
+    /**
      * @throws CouldNotSaveException
      */
     public function save(ProductSliderInterface $entity): ProductSliderInterface

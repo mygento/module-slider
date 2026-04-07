@@ -9,6 +9,7 @@
 namespace Mygento\Slider\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Mygento\Slider\Api\Data\ProductSliderInterface;
 
 /**
  * @api
@@ -28,6 +29,13 @@ interface ProductSliderRepositoryInterface
      * @return \Mygento\Slider\Api\Data\ProductSliderInterface
      */
     public function getById(int $entityId): Data\ProductSliderInterface;
+
+    /**
+     * Retrieve Product Slider by Identity Field
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return \Mygento\Slider\Api\Data\ProductSliderInterface
+     */
+    public function getByIdentity(string $identity): ProductSliderInterface;
 
     /**
      * Retrieve Product Slider entities matching the specified criteria

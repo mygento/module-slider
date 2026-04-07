@@ -1,0 +1,88 @@
+type Slider {
+    title: String
+    identity: String
+    options: Options!
+    is_active: Int
+    banners: [Banner!]! @doc(description: "List of banners in the slider")
+}
+type ProductSlider {
+    title: String
+    identity: String
+    options: Options!
+    parameters: Parameters!
+    is_active: Boolean
+    products: [Product]
+}
+
+type Banner {
+    image: String! @doc(description: "Banner image URL")
+    name: String @doc(description: "Banner Name")
+    link: String @doc(description: "Banner link URL")
+}
+
+type Options {
+    jpg: Boolean
+    avif: Boolean
+    dots: Boolean
+    webp: Boolean
+    width: String
+    arrows: Boolean
+    height: String
+    preload: Boolean
+    autoplay: Boolean
+    infinite: Boolean
+    lazyLoad: Boolean
+    per_page: String
+    breakpoint: String
+    width_small: String
+    height_small: String
+    autoplay_interval: String
+}
+type Parameters {
+    breakpoints: [Breakpoints]
+    products_count: String
+    sort_order: String
+}
+type Breakpoints {
+    width: String
+    destroy: Boolean
+    per_page: String
+    record_id: String
+    initialize: Boolean
+}
+
+type ImageFormats {
+    avif: String
+    webp: String
+    jpg: String
+}
+
+type Product {
+    sku: String
+    name: String
+    url: String
+    width: String
+    height: String
+    details: String
+    is_saleable: Boolean
+    is_available: Boolean
+    add_to_wishlist_params: String
+    add_to_compare_params: String
+    image_default: String
+    image_formats: [ImageFormats]
+}
+
+type SliderSearchResult {
+    items: [Slider]
+    total_count: Int
+    page_info: SearchResultPageInfo
+}
+
+type Query {
+    slider(
+        identity: String,
+    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+    productSlider(
+        identity: String,
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+}

@@ -49,7 +49,7 @@ class Slider extends AbstractDb
      */
     public function load(AbstractModel $object, $value, $field = null)
     {
-        return $this->entityManager->load($object, $value);
+        return $this->entityManager->load($object, $value, $field);
     }
 
     /**
@@ -70,6 +70,20 @@ class Slider extends AbstractDb
         $this->entityManager->delete($object);
 
         return $this;
+    }
+
+    public function loadByIdentity(AbstractModel $object, string $identity)
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getMainTable())
+            ->where('identity = :identity');
+
+        $data =  $connection->fetchRow($select, [':identity' => $identity]);
+
+        $object->setData($data);
+
+        return $object;
     }
 
     /**

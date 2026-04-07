@@ -42,9 +42,25 @@ class SliderRepository implements SliderRepositoryInterface
         $this->resource->load($entity, $entityId);
         if (!$entity->getId()) {
             throw new NoSuchEntityException(
-                __('A Slider Slider with id "%1" does not exist', $entityId),
+                __('A Slider with id "%1" does not exist', $entityId),
             );
         }
+
+        return $entity;
+    }
+
+    public function getByIdentity(string $identity): SliderInterface
+    {
+        $entity = $this->entityFactory->create();
+        $this->resource->loadByIdentity($entity, $identity);
+        if (!$entity->getId()) {
+            throw new NoSuchEntityException(
+                __('A Slider with identity "%1" does not exist', $identity),
+            );
+        }
+        $itemIds = $this->resource->fetchCurrentRelations((int) $entity->getId());
+
+        $entity->addData(['banner_ids' => $itemIds]);
 
         return $entity;
     }
@@ -58,7 +74,7 @@ class SliderRepository implements SliderRepositoryInterface
             $this->resource->save($entity);
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(
-                __('Could not save the Slider Slider'),
+                __('Could not save the Slider'),
                 $exception,
             );
         }

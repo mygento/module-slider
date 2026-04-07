@@ -89,6 +89,20 @@ class ProductSlider extends AbstractDb
         return $connection->fetchCol($select, ['entity_id' => (int) $id]);
     }
 
+    public function loadByIdentity(AbstractModel $object, string $identity)
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getMainTable())
+            ->where('identity = :identity');
+
+        $data =  $connection->fetchRow($select, [':identity' => $identity]);
+
+        $object->setData($data);
+
+        return $object;
+    }
+
     /**
      * Initialize resource model
      */

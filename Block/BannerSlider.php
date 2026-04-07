@@ -8,7 +8,6 @@
 
 namespace Mygento\Slider\Block;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
@@ -17,6 +16,7 @@ use Mygento\Slider\Api\Data\SliderInterface;
 use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Mygento\Slider\Model\ResourceModel\Slider;
+use Mygento\Slider\Model\SliderImages;
 
 class BannerSlider extends Template implements BlockInterface
 {
@@ -25,6 +25,7 @@ class BannerSlider extends Template implements BlockInterface
     public function __construct(
         private Resizer $service,
         private Slider\CollectionFactory $sliderCollectionFactory,
+        private SliderImages $sliderImages,
         private Banner\CollectionFactory $factory,
         private DateTime $date,
         Template\Context $context,
@@ -94,7 +95,18 @@ class BannerSlider extends Template implements BlockInterface
         $result = [];
         foreach ($collection as $entity) {
             $item = $entity->getData();
-            $item['formats'] = $this->buildImageFormats($options, $item['image'] ?? null, $item['small_image'] ?? null);
+            $item['formats'] = $this->sliderImages->buildImageFormats($options, [
+                'image' => [
+                    'path' => $item['image'] ?? null,
+                    'width' => $this->getIntegerOption($options, 'width'),
+                    'height' => $this->getIntegerOption($options, 'height'),
+                ],
+                'small_image' => [
+                    'path' => $item['small_image'] ?? null,
+                    'width' => $this->getIntegerOption($options, 'width_small'),
+                    'height' => $this->getIntegerOption($options, 'height_small'),
+                ],
+            ]);
             $item['default'] = $this->service->resizeAndConvert($item['image'] ?? null, $jpg ? 'jpg' : null, $width, $height);
             $result[] = $item;
         }
@@ -188,54 +200,5 @@ class BannerSlider extends Template implements BlockInterface
         }
 
         return $entity;
-    }
-
-    private function buildImageFormats(array $options, ?string $image = null, ?string $smallImage = null): array
-    {
-        if (null === $image) {
-            return [];
-        }
-        $width = $this->getIntegerOption($options, 'width');
-        $height = $this->getIntegerOption($options, 'height');
-        $widthS = $this->getIntegerOption($options, 'width_small');
-        $heightS = $this->getIntegerOption($options, 'height_small');
-        $result = [];
-
-        foreach (['avif', 'webp', 'jpg'] as $ext) {
-            if (!isset($options[$ext]) || $options[$ext] !== true) {
-                continue;
-            }
-
-            $result[$ext]['image'] = $this->resizeImage($ext, $image, $width, $height);
-            if ($smallImage === null) {
-                continue;
-            }
-            $result[$ext]['small_image'] = $this->resizeImage($ext, $smallImage, $widthS, $heightS);
-        }
-
-        return $result;
-    }
-
-    private function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
-    {
-        $result = [];
-        for ($i = 1;$i <= 3;$i++) {
-            try {
-                $file = $this->service->resizeAndConvert(
-                    $image,
-                    $ext,
-                    $width !== null ? $width * $i : null,
-                    $height !== null ? $height * $i : null,
-                );
-                if ($file === null) {
-                    continue;
-                }
-                $result[($width * $i) . 'w'] = $file;
-            } catch (LocalizedException) {
-                continue;
-            }
-        }
-
-        return $result;
     }
 }
