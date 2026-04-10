@@ -35,8 +35,8 @@ class Slider implements ResolverInterface
         Field $field,
         $context,
         ResolveInfo $info,
-        array $value = null,
-        array $args = null,
+        ?array $value = null,
+        ?array $args = null,
     ) {
         $identity = $args['identity'] ?? null;
 
@@ -112,8 +112,8 @@ class Slider implements ResolverInterface
         ];
         if (
             !empty($banner->getSmallImage())
-           && !empty($options['width_small'])
-        && !empty($options['height_small'])
+            && !empty($options['width_small'])
+            && !empty($options['height_small'])
         ) {
             $images[] = [
                 'path' => $banner->getSmallImage(),
