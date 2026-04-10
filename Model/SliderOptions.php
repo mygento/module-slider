@@ -10,14 +10,18 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model;
 
+use Magento\CatalogWidget\Model\Rule;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Rule\Model\Condition\Combine;
+use Mygento\Slider\Api\Data\ProductSliderInterface;
 
 class SliderOptions
 {
     public function __construct(
         private Resizer $service,
         private SerializerInterface $serializer,
+        private Rule $rule,
     ) {}
 
     public function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
@@ -35,7 +39,7 @@ class SliderOptions
                     continue;
                 }
                 $result[($width * $i) . 'w'] = $file;
-            } catch (LocalizedException $exception) {
+            } catch (LocalizedException) {
                 continue;
             }
         }
@@ -96,7 +100,7 @@ class SliderOptions
             'avif' => $options['avif'] ?? false,
             'dots' => $options['dots'] ?? false,
             'webp' => $options['webp'] ?? false,
-            'width' => $options['webp'] ?? '',
+            'width' => $options['width'] ?? '',
             'arrows' => $options['arrows'] ?? false,
             'height' => $options['height'] ?? '',
             'preload' => $options['preload'] ?? false,
@@ -125,10 +129,27 @@ class SliderOptions
             }
         }
 
-        return[
+        return [
             'sort_order' => $options['sort_order'] ?? '',
             'products_count' => $options['products_count'] ?? '',
             'breakpoints' => $options['breakpoints'] ?? [],
         ];
+    }
+
+    public function getSliderConditions(ProductSliderInterface $productSlider): Combine
+    {
+        $conditions = $this->serializer->unserialize($productSlider->getConditions() ?? '[]');
+
+        foreach ($conditions as $key => $condition) {
+            if (!empty($condition['attribute'])) {
+                if (in_array($condition['attribute'], ['special_from_date', 'special_to_date'])) {
+                    $conditions[$key]['value'] = date('Y-m-d H:i:s', strtotime($condition['value']));
+                }
+            }
+        }
+
+        $this->rule->loadPost(['conditions' => $conditions]);
+
+        return $this->rule->getConditions();
     }
 }

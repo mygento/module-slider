@@ -11,28 +11,23 @@ declare(strict_types=1);
 namespace Mygento\Slider\Model\Resolver;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Block\Product\ReviewRendererInterface;
-use Magento\Catalog\Helper\Product\Compare;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Wishlist\Helper\Data;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
-use Mygento\Slider\Api\ProductSliderRepositoryInterface;
+use Mygento\Slider\Api\Data\SliderInterface;
+use Mygento\Slider\Model\ProductSliderProducts;
+use Mygento\Slider\Model\ResourceModel\ProductSlider\CollectionFactory;
 use Mygento\Slider\Model\SliderOptions;
-use Mygento\Slider\Model\SliderProducts;
 
 class ProductSlider implements ResolverInterface
 {
     private ?array $products = null;
 
     public function __construct(
-        private ProductSliderRepositoryInterface $productSliderRepository,
-        private SliderProducts $sliderProducts,
-        private ReviewRendererInterface $productReviewRenderer,
-        private Data $wishlistHelper,
-        private Compare $compareHelper,
+        private CollectionFactory $sliderCollectionFactory,
+        private ProductSliderProducts $sliderProducts,
         private SliderOptions $sliderOptions,
     ) {}
 
@@ -52,14 +47,13 @@ class ProductSlider implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
         }
 
-        try {
-            /** @var ProductSliderInterface $slider */
-            $slider = $this->productSliderRepository->getByIdentity($identity);
-
-            return $this->getSliderProducts($slider);
-        } catch (\Exception $e) {
-            throw new GraphQlNoSuchEntityException(__($e->getMessage()));
+        /** @var ProductSliderInterface $slider */
+        $slider = $this->getSlider($identity);
+        if (!$slider->getId()) {
+            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled'));
         }
+
+        return $this->getSliderProducts($slider);
     }
 
     private function getSliderProducts(ProductSliderInterface $slider): array
@@ -75,27 +69,14 @@ class ProductSlider implements ResolverInterface
     private function prepareProductsData(ProductSliderInterface $slider): array
     {
         $products = $this->sliderProducts->getProductCollection($slider);
-        $productsData = [];
+        $productModels = [];
         $options = $slider->getOptions();
-
-        /** @var ProductInterface $product */
+        if (empty($options['parameters']['breakpoints'])) {
+            $imageFormats = [];
+        }
         foreach ($products as $product) {
-            $productsImages = $this->sliderProducts->getImageData($product, $options['options']);
-            $productSizes = $this->sliderProducts->getSizes($product);
-            $productsData[] = [
-                'sku' => $product->getSku(),
-                'name' => $product->getName(),
-                'url' => $product->getProductUrl(),
-                'details' => $this->productReviewRenderer->getReviewsSummaryHtml($product, ReviewRendererInterface::SHORT_VIEW),
-                'is_saleable' => $product->isSaleable(),
-                'is_available' => $product->isAvailable(),
-                'add_to_wishlist_params' => $this->wishlistHelper->isAllow() ? $this->wishlistHelper->getAddToCartParams($product) : '',
-                'add_to_compare_params' => $this->compareHelper->getPostDataParams($product),
-                'image_formats' => $productsImages['formats'] ?? null,
-                'image_default' => $productsImages['default'] ?? null,
-                'width' => $productSizes['width'],
-                'height' => $productSizes['height'],
-            ];
+            $imageFormats = $imageFormats ?? $this->prepareImages($slider, $product);
+            $productModels[] = ['product' => ['model' => $product], 'image_formats' => $imageFormats, 'sku' => $product->getSku()];
         }
 
         return [
@@ -104,7 +85,34 @@ class ProductSlider implements ResolverInterface
             'options' => $this->sliderOptions->getOptions($options['options'] ?? ''),
             'parameters' => $this->sliderOptions->getParameters($options['parameters'] ?? ''),
             'is_active' => $slider->isActive(),
-            'products' => $productsData,
+            'items' => $productModels,
         ];
+    }
+
+    private function prepareImages(ProductSliderInterface $slider, ProductInterface $product): array
+    {
+        $productImages = [];
+        $options = $slider->getOptions();
+
+        foreach ($options['parameters']['breakpoints'] as $breakpoint) {
+            $productImages[] = $this->sliderProducts->getFormattedImages(
+                $product,
+                $slider,
+                ['width' => (int) $breakpoint['width']],
+            );
+        }
+
+        //profiler - n+1 queries
+        return $productImages;
+    }
+
+    private function getSlider(string $identity): ?ProductSliderInterface
+    {
+        /** @var \Mygento\Slider\Model\ResourceModel\ProductSlider\Collection $collection */
+        $collection = $this->sliderCollectionFactory->create();
+        $collection->addFieldToFilter(SliderInterface::IDENTITY, $identity);
+        $collection->addFieldToFilter(SliderInterface::IS_ACTIVE, 1);
+
+        return $collection->getFirstItem();
     }
 }

@@ -1,88 +1,99 @@
 type Slider {
-    title: String
-    identity: String
-    options: Options!
-    is_active: Int
+    title: String!
+    identity: String!
+    options: SliderOptions!
     banners: [Banner!]! @doc(description: "List of banners in the slider")
 }
-type ProductSlider {
-    title: String
-    identity: String
-    options: Options!
-    parameters: Parameters!
-    is_active: Boolean
-    products: [Product]
-}
-
 type Banner {
-    image: String! @doc(description: "Banner image URL")
-    name: String @doc(description: "Banner Name")
-    link: String @doc(description: "Banner link URL")
+    image: String!
+    link: String!
+    name: String!
+    image_formats: [Formats]! @doc(description: "List image formats")
+#    отдаем массив брейкпоинтов, под каждый брейкпоинт - ресайзнутая картинка
 }
 
-type Options {
-    jpg: Boolean
-    avif: Boolean
-    dots: Boolean
-    webp: Boolean
-    width: String
-    arrows: Boolean
-    height: String
-    preload: Boolean
-    autoplay: Boolean
-    infinite: Boolean
-    lazyLoad: Boolean
-    per_page: String
-    breakpoint: String
-    width_small: String
-    height_small: String
-    autoplay_interval: String
-}
-type Parameters {
-    breakpoints: [Breakpoints]
-    products_count: String
-    sort_order: String
-}
-type Breakpoints {
-    width: String
-    destroy: Boolean
-    per_page: String
-    record_id: String
-    initialize: Boolean
+type Formats {
+    avif: FormatImages
+    webp: FormatImages
+    jpg: FormatImages
 }
 
-type ImageFormats {
-    avif: String
-    webp: String
-    jpg: String
+type FormatImages {
+    image: [ImageSizeLink]
+    small_image: [ImageSizeLink]
 }
 
-type Product {
-    sku: String
-    name: String
+type ImageSizeLink {
+    size: String!
+    link: String!
+}
+type BreakpointsImages {
     url: String
-    width: String
-    height: String
-    details: String
-    is_saleable: Boolean
-    is_available: Boolean
-    add_to_wishlist_params: String
-    add_to_compare_params: String
-    image_default: String
-    image_formats: [ImageFormats]
+    format: String
 }
 
+type SliderOptions {
+    dots: Boolean!
+    width: String!
+    height: String!
+    arrows: Boolean!
+    preload: Boolean!
+    autoplay: Boolean!
+    infinite: Boolean!
+    lazyLoad: Boolean!
+    per_page: String!
+    breakpoint: String!
+    width_small: String!
+    height_small: String!
+    autoplay_interval: String!
+}
 type SliderSearchResult {
     items: [Slider]
     total_count: Int
     page_info: SearchResultPageInfo
 }
 
+type ProductSlider {
+    title: String!
+    identity: String!
+    options: ProductSliderOptions!
+    parameters: Parameters!
+    items: [SliderProduct!]!
+}
+
+type SliderProduct @doc(description: "Contains product details") {
+    product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
+    image_formats: [Formats]! @doc(description: "List image formats")
+}
+
+type ProductSliderOptions {
+    dots: Boolean!
+    webp: Boolean!
+    width: String!
+    height: String!
+    arrows: Boolean!
+    preload: Boolean!
+    autoplay: Boolean!
+    infinite: Boolean!
+    lazyLoad: Boolean!
+    per_page: String!
+    breakpoint: String!
+    width_small: String!
+    height_small: String!
+    autoplay_interval: String!
+}
+
+type Parameters {
+    products_count: String
+    sort_order: String
+}
+
 type Query {
     slider(
-        identity: String,
+        identity: String!,
     ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+
     productSlider(
-        identity: String,
+        identity: String!,
     ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
 }

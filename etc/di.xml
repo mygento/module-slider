@@ -289,12 +289,7 @@
             <argument name="resourceModel" xsi:type="string">Mygento\Slider\Model\ResourceModel\Banner</argument>
         </arguments>
     </type>
-    <type name="Mygento\Slider\Model\SliderOptions">
-        <arguments>
-            <argument name="service" xsi:type="object">Mygento\Slider\Model\ProductResizer</argument>
-        </arguments>
-    </type>
-    <type name="Mygento\Slider\Model\SliderImages">
+    <type name="Mygento\Slider\Model\ProductSliderProducts">
         <arguments>
             <argument name="service" xsi:type="object">Mygento\Slider\Model\ProductResizer</argument>
         </arguments>

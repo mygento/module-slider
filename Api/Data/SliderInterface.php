@@ -14,7 +14,7 @@ namespace Mygento\Slider\Api\Data;
 interface SliderInterface
 {
     public const ID = 'id';
-    public const IS_ACTIVE = 'active';
+    public const IS_ACTIVE = 'is_active';
     public const IDENTITY = 'identity';
     public const TITLE = 'title';
     public const FROM_DATE = 'from_date';

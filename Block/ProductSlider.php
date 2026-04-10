@@ -23,8 +23,8 @@ use Magento\Framework\View\LayoutFactory;
 use Magento\Rule\Model\Condition\Sql\Builder;
 use Magento\Widget\Helper\Conditions;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
+use Mygento\Slider\Model\ProductSliderProducts;
 use Mygento\Slider\Model\ResourceModel;
-use Mygento\Slider\Model\SliderProducts;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -37,7 +37,7 @@ class ProductSlider extends ProductsList
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        private SliderProducts $sliderProducts,
+        private ProductSliderProducts $sliderProducts,
         private ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
         Context $context,
         CollectionFactory $productCollectionFactory,
@@ -117,9 +117,7 @@ class ProductSlider extends ProductsList
 
     public function getImageData(Product $product): array
     {
-        $options = $this->getSlider()->getOptions();
-
-        return $this->sliderProducts->getImageData($product, $options);
+        return $this->sliderProducts->getImageData($product, $this->getSlider());
     }
 
     public function getTitle(): string
