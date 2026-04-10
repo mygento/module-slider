@@ -16,6 +16,7 @@ use Mygento\Slider\Api\Data\SliderInterface;
 use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Mygento\Slider\Model\ResourceModel\Slider;
+use Mygento\Slider\Model\SliderOptions;
 
 class BannerSlider extends Template implements BlockInterface
 {
@@ -24,7 +25,7 @@ class BannerSlider extends Template implements BlockInterface
     public function __construct(
         private Resizer $service,
         private Slider\CollectionFactory $sliderCollectionFactory,
-        private \Mygento\Slider\Model\SliderOptions $sliderImages,
+        private SliderOptions $sliderImages,
         private Banner\CollectionFactory $factory,
         private DateTime $date,
         Template\Context $context,
