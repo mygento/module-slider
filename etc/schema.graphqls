@@ -9,7 +9,6 @@ type Banner {
     link: String!
     name: String!
     image_formats: [Formats]! @doc(description: "List image formats")
-#    отдаем массив брейкпоинтов, под каждый брейкпоинт - ресайзнутая картинка
 }
 
 type Formats {
@@ -19,8 +18,8 @@ type Formats {
 }
 
 type FormatImages {
-    image: [ImageSizeLink]
-    small_image: [ImageSizeLink]
+    image: [ImageSizeLink!]
+    small_image: [ImageSizeLink!]
 }
 
 type ImageSizeLink {
@@ -28,8 +27,8 @@ type ImageSizeLink {
     link: String!
 }
 type BreakpointsImages {
-    url: String
-    format: String
+    url: String!
+    format: String!
 }
 
 type SliderOptions {
@@ -48,9 +47,9 @@ type SliderOptions {
     autoplay_interval: String!
 }
 type SliderSearchResult {
-    items: [Slider]
-    total_count: Int
-    page_info: SearchResultPageInfo
+    items: [Slider]!
+    total_count: Int!
+    page_info: SearchResultPageInfo!
 }
 
 type ProductSlider {
@@ -84,8 +83,8 @@ type ProductSliderOptions {
 }
 
 type Parameters {
-    products_count: String
-    sort_order: String
+    products_count: String!
+    sort_order: String!
 }
 
 type Query {
