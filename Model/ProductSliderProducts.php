@@ -110,7 +110,18 @@ class ProductSliderProducts
         $imagList = $this->getImageData($product, $slider, $sizes);
         $imageFormats = $imagList['formats'] ?? [];
         if (empty($imageFormats)) {
-            return [];
+            if (empty($imagList['default'])) {
+                return [];
+            }
+
+            return [
+                'jpg' => [
+                    'image' => [
+                        'size' => 'default',
+                        'link' => $imagList['default'],
+                    ],
+                ],
+            ];
         }
         $result = [];
 

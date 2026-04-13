@@ -16,7 +16,6 @@ use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
-use Mygento\Slider\Api\Data\SliderInterface;
 use Mygento\Slider\Model\ProductSliderProducts;
 use Mygento\Slider\Model\ResourceModel\ProductSlider\CollectionFactory;
 use Mygento\Slider\Model\SliderOptions;
@@ -102,7 +101,6 @@ class ProductSlider implements ResolverInterface
             );
         }
 
-        //profiler - n+1 queries
         return $productImages;
     }
 
@@ -110,8 +108,8 @@ class ProductSlider implements ResolverInterface
     {
         /** @var \Mygento\Slider\Model\ResourceModel\ProductSlider\Collection $collection */
         $collection = $this->sliderCollectionFactory->create();
-        $collection->addFieldToFilter(SliderInterface::IDENTITY, $identity);
-        $collection->addFieldToFilter(SliderInterface::IS_ACTIVE, 1);
+        $collection->addFieldToFilter(ProductSliderInterface::IDENTITY, $identity);
+        $collection->addFieldToFilter(ProductSliderInterface::IS_ACTIVE, 1);
 
         return $collection->getFirstItem();
     }

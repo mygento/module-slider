@@ -8,7 +8,7 @@ type Banner {
     image: String!
     link: String!
     name: String!
-    image_formats: [Formats]! @doc(description: "List image formats")
+    image_formats: Formats! @doc(description: "List image formats")
 }
 
 type Formats {
@@ -45,11 +45,6 @@ type SliderOptions {
     width_small: String!
     height_small: String!
     autoplay_interval: String!
-}
-type SliderSearchResult {
-    items: [Slider]!
-    total_count: Int!
-    page_info: SearchResultPageInfo!
 }
 
 type ProductSlider {
