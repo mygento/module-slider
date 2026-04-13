@@ -41,7 +41,7 @@ class ProductSlider implements ResolverInterface
         ?array $args = null,
     ) {
         $identity = $args['identity'] ?? null;
-
+        //$info->getFieldSelection(2) - только для нужных ext ресайзить
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
         }

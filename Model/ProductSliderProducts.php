@@ -114,6 +114,8 @@ class ProductSliderProducts
                 return [];
             }
 
+            //$imageInfo = $this->file->getPathInfo($imageName);
+
             return [
                 'jpg' => [
                     'image' => [

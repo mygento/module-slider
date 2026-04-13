@@ -138,17 +138,17 @@ class Slider implements ResolverInterface
                 continue;
             }
 
-            $result['formats'][$format] = [];
+            $result[$format] = [];
             foreach ($images as $index => $sizes) {
                 if (!isset($typeMapping[$index]) || !is_array($sizes)) {
                     continue;
                 }
 
                 $type = $typeMapping[$index];
-                $result['formats'][$format][$type] = [];
+                $result[$format][$type] = [];
 
                 foreach ($sizes as $size => $link) {
-                    $result['formats'][$format][$type][] = [
+                    $result[$format][$type][] = [
                         'size' => $size,
                         'link' => $link,
                     ];
