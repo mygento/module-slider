@@ -41,31 +41,30 @@ class ProductSlider implements ResolverInterface
         ?array $args = null,
     ) {
         $identity = $args['identity'] ?? null;
-        //$info->getFieldSelection(2) - только для нужных ext ресайзить
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
         }
-
         /** @var ProductSliderInterface $slider */
         $slider = $this->getSlider($identity);
         if (!$slider->getId()) {
             throw new GraphQlNoSuchEntityException(__('Slider not found or disabled'));
         }
+        $imgExtensions = $info->getFieldSelection(2)['items']['image_formats'] ?? [];
 
-        return $this->getSliderProducts($slider);
+        return $this->getSliderProducts($slider, $imgExtensions);
     }
 
-    private function getSliderProducts(ProductSliderInterface $slider): array
+    private function getSliderProducts(ProductSliderInterface $slider, array $imgExtensions = []): array
     {
         if (isset($this->products[$slider->getIdentity()])) {
             return $this->products[$slider->getIdentity()];
         }
-        $this->products[$slider->getIdentity()] = $this->prepareProductsData($slider);
+        $this->products[$slider->getIdentity()] = $this->prepareProductsData($slider, $imgExtensions);
 
         return $this->products[$slider->getIdentity()];
     }
 
-    private function prepareProductsData(ProductSliderInterface $slider): array
+    private function prepareProductsData(ProductSliderInterface $slider, array $imgExtensions = []): array
     {
         $products = $this->sliderProducts->getProductCollection($slider);
         $productModels = [];
@@ -74,7 +73,7 @@ class ProductSlider implements ResolverInterface
             $imageFormats = [];
         }
         foreach ($products as $product) {
-            $imageFormats = $imageFormats ?? $this->prepareImages($slider, $product);
+            $imageFormats = $imageFormats ?? $this->prepareImages($slider, $product, $imgExtensions);
             $productModels[] = ['product' => ['model' => $product], 'image_formats' => $imageFormats, 'sku' => $product->getSku()];
         }
 
@@ -88,20 +87,24 @@ class ProductSlider implements ResolverInterface
         ];
     }
 
-    private function prepareImages(ProductSliderInterface $slider, ProductInterface $product): array
+    private function prepareImages(ProductSliderInterface $slider, ProductInterface $product, array $imgExtensions = []): array
     {
-        $productImages = [];
         $options = $slider->getOptions();
 
+        $sizes = [];
         foreach ($options['parameters']['breakpoints'] as $breakpoint) {
-            $productImages[] = $this->sliderProducts->getFormattedImages(
-                $product,
-                $slider,
-                ['width' => (int) $breakpoint['width']],
-            );
+            if (empty($breakpoint['width'])) {
+                continue;
+            }
+            $sizes[$breakpoint['width']] = $breakpoint['width'] ?? null;
         }
+        rsort($sizes); //large resolution first
 
-        return $productImages;
+        return $this->sliderProducts->getFormattedImages(
+            $product,
+            $slider,
+            ['sizes' => $sizes, 'ext' => $imgExtensions],
+        );
     }
 
     private function getSlider(string $identity): ?ProductSliderInterface

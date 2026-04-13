@@ -66,17 +66,19 @@ class ProductSliderProducts
         return $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);
     }
 
-    public function getImageData(ProductInterface $product, ProductSliderInterface $slider, array $sizes = []): array
+    public function getImageData(ProductInterface $product, ProductSliderInterface $slider, array $imgParams = []): array
     {
         $img = $product->getData('thumbnail');
         $options = $slider->getOptions();
         $options = $options['options'] ?? $options;
         $jpg = isset($options['jpg']) && $options['jpg'] === true;
-        if (empty($sizes)) {
+        $sizes = isset($imgParams['width']) ? $imgParams : null;
+        if (!$sizes) {
             $sizes = $this->getSizes($product);
         }
         $width = $sizes['width'] ?? null;
         $height = $sizes['height'] ?? null;
+        $options = $imgParams['ext'] ?? $options;
 
         try {
             return [
@@ -107,42 +109,67 @@ class ProductSliderProducts
 
     public function getFormattedImages(ProductInterface $product, ProductSliderInterface $slider, array $sizes): array
     {
-        $imagList = $this->getImageData($product, $slider, $sizes);
-        $imageFormats = $imagList['formats'] ?? [];
-        if (empty($imageFormats)) {
-            if (empty($imagList['default'])) {
-                return [];
-            }
+        $sizeList = $sizes['sizes'] ?? null;
 
-            //$imageInfo = $this->file->getPathInfo($imageName);
-
-            return [
-                'jpg' => [
-                    'image' => [
-                        'size' => 'default',
-                        'link' => $imagList['default'],
-                    ],
-                ],
-            ];
+        if (!$sizeList) {
+            return $this->getDefaultFormattedImage($product, $slider);
         }
+
+        return $this->getFormattedImagesForSizes($product, $slider, $sizeList);
+    }
+
+    private function getDefaultFormattedImage(ProductInterface $product, ProductSliderInterface $slider): array
+    {
+        $imageList = $this->getImageData($product, $slider);
+
+        if (empty($imageList['default'])) {
+            return [];
+        }
+
+        $extension = $this->getFileExtensionFromUrl($imageList['default']);
+
+        return [
+            $extension => [
+                [
+                    'size' => 'default',
+                    'link' => $imageList['default'],
+                ],
+            ],
+        ];
+    }
+
+    private function getFormattedImagesForSizes(
+        ProductInterface $product,
+        ProductSliderInterface $slider,
+        array $sizes,
+    ): array {
         $result = [];
 
-        foreach ($imageFormats as $ext => $data) {
-            if (!isset($result[$ext])) {
-                $result[$ext] = [];
+        foreach ($sizes as $size) {
+            $imageList = $this->getImageData($product, $slider, ['width' => (int) $size]);
+
+            if (empty($imageList['formats'])) {
+                continue;
             }
 
-            foreach ($data as $imageType => $sizes) {
-                if (!isset($result[$ext][$imageType])) {
-                    $result[$ext][$imageType] = [];
-                }
+            $result = $this->mergeFormats($result, $imageList['formats']);
+        }
 
-                foreach ($sizes as $size => $link) {
-                    $result[$ext][$imageType][] = [
-                        'size' => $size,
-                        'link' => $link,
-                    ];
-                }
+        return $result;
+    }
+
+    private function mergeFormats(array $result, array $formats): array
+    {
+        foreach ($formats as $extension => $images) {
+            if (empty($images['image'])) {
+                continue;
+            }
+
+            foreach ($images['image'] as $size => $link) {
+                $result[$extension][] =  [
+                    'size' => $size,
+                    'link' => $link,
+                ];
             }
         }
 
@@ -192,5 +219,18 @@ class ProductSliderProducts
         }
 
         return $result;
+    }
+
+    private function getFileExtensionFromUrl(string $imageUrl): ?string
+    {
+        $parsedUrl = parse_url($imageUrl, PHP_URL_PATH);
+
+        if (!$parsedUrl) {
+            return null;
+        }
+
+        $extension = pathinfo($parsedUrl, PATHINFO_EXTENSION);
+
+        return $extension ? strtolower($extension) : null;
     }
 }
