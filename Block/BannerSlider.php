@@ -65,6 +65,13 @@ class BannerSlider extends Template implements BlockInterface
         return $this->getSlider()?->getOptionsList() ?? [];
     }
 
+    public function hasThumbnails(): string
+    {
+        $options = $this->getOptions();
+
+        return isset($options['thumbnails']) && $options['thumbnails'] == true;
+    }
+
     public function getThumbnailsOptions(): string
     {
         $options = $this->getOptions();
@@ -78,6 +85,7 @@ class BannerSlider extends Template implements BlockInterface
             'pagination' => $options['thumbnails_pagination'],
             'isNavigation' => $options['thumbnails_isNavigation'],
             'arrows' => $options['thumbnails_arrows'],
+            'drag' => false
         ];
 
         if ($options['thumbnails_gap']) {
@@ -121,6 +129,7 @@ class BannerSlider extends Template implements BlockInterface
         foreach ($collection as $entity) {
             $item = $entity->getData();
             $item['formats'] = $this->buildImageFormats($options, $item['image'] ?? null, $item['small_image'] ?? null);
+            $item['thumbnail_images'] = $this->buildThumbnailImages($options, $item['image'] ?? null, $item['small_image'] ?? null);
             $item['default'] = $this->service->resizeAndConvert($item['image'] ?? null, $jpg ? 'jpg' : null, $width, $height);
             $result[] = $item;
         }
@@ -214,6 +223,28 @@ class BannerSlider extends Template implements BlockInterface
         }
 
         return $entity;
+    }
+
+    private function buildThumbnailImages(array $options, ?string $image = null, ?string $smallImage = null): array
+    {
+        if (null === $image) {
+            return [];
+        }
+        $thumbW = $this->getIntegerOption($options, 'thumbnails_width') ?: null;
+        $thumbH = $this->getIntegerOption($options, 'thumbnails_height') ?: null;
+
+        $width  = $thumbW ?? $this->getIntegerOption($options, 'width');
+        $height = $thumbH ?? $this->getIntegerOption($options, 'height');
+        $widthS = $thumbW ?? $this->getIntegerOption($options, 'width_small');
+        $heightS = $thumbH ?? $this->getIntegerOption($options, 'height_small');
+
+        $result = [];
+        $result['image'] = $this->service->resizeAndConvert($image, 'jpg', $width, $height);
+        if ($smallImage !== null) {
+            $result['small_image'] = $this->service->resizeAndConvert($smallImage, 'jpg', $widthS, $heightS);
+        }
+
+        return $result;
     }
 
     private function buildImageFormats(array $options, ?string $image = null, ?string $smallImage = null): array
