@@ -25,6 +25,9 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
 <?php endif; ?>
     <picture>
 <?php foreach ($img['formats'] as $type => $item): ?>
+    <?php if ($type === 'default'): ?>
+        <?php continue; ?>
+    <?php endif; ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
@@ -55,6 +58,9 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
 <?php endif; ?>
                 <picture>
 <?php foreach ($img['formats'] as $type => $item): ?>
+    <?php if ($type === 'default'): ?>
+        <?php continue; ?>
+    <?php endif; ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
