@@ -39,7 +39,7 @@ class SliderRepository implements SliderRepositoryInterface
     public function getById(int $entityId): SliderInterface
     {
         $entity = $this->entityFactory->create();
-        $this->resource->load($entity, $entityId, []);
+        $this->resource->load($entity, $entityId);
         if (!$entity->getId()) {
             throw new NoSuchEntityException(
                 __('A Slider with id "%1" does not exist', $entityId),
