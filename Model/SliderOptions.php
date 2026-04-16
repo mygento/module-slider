@@ -75,10 +75,22 @@ class SliderOptions
                 }
 
                 $result[$ext][$key] = $this->resizeImage($ext, $imagePath, $width, $height);
+                if (!isset($result['default'])) {
+                    $result['default'] = $this->getOriginalImage($imagePath);
+                }
             }
         }
 
         return $result;
+    }
+
+    public function getOriginalImage(string $imagePath): ?string
+    {
+        try {
+            return $this->service->getImageLinkData($imagePath);
+        } catch (LocalizedException) {
+            return null;
+        }
     }
 
     public function getOptions(string|array|null $options): array
@@ -95,24 +107,13 @@ class SliderOptions
             }
         }
 
-        return[
-            'jpg' => $options['jpg'] ?? false,
-            'avif' => $options['avif'] ?? false,
-            'dots' => $options['dots'] ?? false,
-            'webp' => $options['webp'] ?? false,
-            'width' => $options['width'] ?? '',
-            'arrows' => $options['arrows'] ?? false,
-            'height' => $options['height'] ?? '',
-            'preload' => $options['preload'] ?? false,
-            'autoplay' => $options['autoplay'] ?? false,
-            'infinite' => $options['infinite'] ?? false,
-            'lazyLoad' => $options['lazyLoad'] ?? false,
-            'per_page' => $options['per_page'] ?? '',
-            'breakpoint' => $options['breakpoint'] ?? '',
-            'width_small' => $options['width_small'] ?? '',
-            'height_small' => $options['height_small'] ?? '',
-            'autoplay_interval' =>  $options['autoplay_interval'] ?? '',
-        ];
+        foreach ($options as $key => $value) {
+            if ($value === '') {
+                $options[$key] = null; //convert empty string values to null
+            }
+        }
+
+        return $options;
     }
 
     public function getParameters(string|array|null $options): array

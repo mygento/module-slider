@@ -7,18 +7,18 @@ type Slider {
 
 type SliderOptions {
     dots: Boolean!
-    width: String!
-    height: String!
+    width: String
+    height: String
     arrows: Boolean!
     preload: Boolean!
     autoplay: Boolean!
     infinite: Boolean!
     lazyLoad: Boolean!
-    per_page: String!
-    breakpoint: String!
-    width_small: String!
-    height_small: String!
-    autoplay_interval: String!
+    per_page: String
+    breakpoint: String
+    width_small: String
+    height_small: String
+    autoplay_interval: String
 }
 
 type Banner {
@@ -32,6 +32,7 @@ type SliderImageFormats {
     avif: ImageFormatData
     webp: ImageFormatData
     jpg: ImageFormatData
+    default: String
 }
 
 type ImageFormatData {

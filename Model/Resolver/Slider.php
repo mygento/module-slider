@@ -38,7 +38,7 @@ class Slider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
-        $identity = $args['identity'] ?? null;
+        $identity = $args['identity'] ?? $value['identity'] ?? null;
 
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
@@ -134,6 +134,10 @@ class Slider implements ResolverInterface
         ];
         $result = [];
         foreach ($imagList as $format => $images) {
+            if ($format === 'default') {
+                $result[$format] = $images;
+                continue;
+            }
             if (!is_array($images)) {
                 continue;
             }

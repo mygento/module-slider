@@ -12,6 +12,7 @@ use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Io\File;
@@ -41,7 +42,7 @@ class Resizer
         $mediaPath = $this->directoryList->getPath(DirectoryList::MEDIA);
 
         $imageName = ltrim(str_replace($this->basePath, '', $imagePath), '/');
-        $inputPath = $mediaPath . '/' . $this->basePath . '/' . $imageName;
+        $inputPath = $this->getImageInputPath($imagePath);
 
         if (!$write->isExist($inputPath)) {
             throw new LocalizedException(__('Source image not found: %1', $imagePath));
@@ -70,6 +71,30 @@ class Resizer
         }
 
         return $this->scale($inputPath, $outputPath, $width, $height);
+    }
+
+    /**
+     * @throws FileSystemException
+     * @throws LocalizedException
+     */
+    public function getImageLinkData(string $imagePath): string
+    {
+        $write = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        $inputPath = $this->getImageInputPath($imagePath);
+        if (!$write->isExist($inputPath)) {
+            throw new LocalizedException(__('Source image not found: %1', $imagePath));
+        }
+
+        return $this->fileToUrl($inputPath);
+    }
+
+    private function getImageInputPath(string $imagePath): string
+    {
+        $mediaPath = $this->directoryList->getPath(DirectoryList::MEDIA);
+
+        $imageName = ltrim(str_replace($this->basePath, '', $imagePath), '/');
+
+        return $mediaPath . '/' . $this->basePath . '/' . $imageName;
     }
 
     private function fileToUrl(string $file): string
