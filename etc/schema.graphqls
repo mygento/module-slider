@@ -32,7 +32,7 @@ type SliderImageFormats {
     avif: ImageFormatData
     webp: ImageFormatData
     jpg: ImageFormatData
-    default: String
+    default: ImageFormatData
 }
 
 type ImageFormatData {
@@ -61,6 +61,7 @@ type ImageFormats {
     avif: [ImageSizeLink]
     webp: [ImageSizeLink]
     jpg: [ImageSizeLink]
+    default: [ImageSizeLink]
 }
 
 type ProductSliderOptions {
