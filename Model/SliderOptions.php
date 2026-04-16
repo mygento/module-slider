@@ -75,9 +75,7 @@ class SliderOptions
                 }
 
                 $result[$ext][$key] = $this->resizeImage($ext, $imagePath, $width, $height);
-                if (!isset($result['default'])) {
-                    $result['default'] = $this->getOriginalImage($imagePath);
-                }
+                $result = $this->addOriginalImage($imagePath, $result);
             }
         }
 
@@ -152,5 +150,16 @@ class SliderOptions
         $this->rule->loadPost(['conditions' => $conditions]);
 
         return $this->rule->getConditions();
+    }
+
+    private function addOriginalImage(string $imagePath, array $result): array
+    {
+        if (isset($result['default'])) {
+            return $result;
+        }
+
+        $result['default']['image'][] = ['size' => 'default', 'link' => $this->getOriginalImage($imagePath)];
+
+        return $result;
     }
 }
