@@ -66,19 +66,13 @@ type ImageFormats {
 
 type ProductSliderOptions {
     dots: Boolean!
-    webp: Boolean!
-    width: String!
-    height: String!
     arrows: Boolean!
-    preload: Boolean!
     autoplay: Boolean!
     infinite: Boolean!
     lazyLoad: Boolean!
-    per_page: String!
-    breakpoint: String!
-    width_small: String!
-    height_small: String!
-    autoplay_interval: String!
+    per_page: String
+    per_move: String
+    autoplay_interval: String
 }
 
 type Parameters {
