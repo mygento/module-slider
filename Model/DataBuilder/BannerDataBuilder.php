@@ -19,7 +19,7 @@ use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Psr\Log\LoggerInterface;
 
-class BannerProvider
+class BannerDataBuilder
 {
     public function __construct(
         private Resizer $service,

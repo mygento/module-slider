@@ -15,14 +15,14 @@ use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\SliderRepositoryInterface;
-use Mygento\Slider\Model\DataBuilder\BannerProvider;
+use Mygento\Slider\Model\DataBuilder\BannerDataBuilder;
 use Mygento\Slider\Model\DataBuilder\Options;
 
 class Slider implements ResolverInterface
 {
     public function __construct(
         private SliderRepositoryInterface $sliderRepository,
-        private BannerProvider $bannerProvider,
+        private BannerDataBuilder $bannerDataBuilder,
         private Options $optionsHelper,
     ) {}
 
@@ -51,7 +51,7 @@ class Slider implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
         }
 
-        $banners = $this->bannerProvider->getImages($slider);
+        $banners = $this->bannerDataBuilder->getImages($slider);
 
         return [
             'title' => $slider->getTitle(),

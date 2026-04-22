@@ -45,13 +45,6 @@ type ImageSizeLink {
     link: String
 }
 
-type ImageFormats {
-    avif: [ImageSizeLink]
-    webp: [ImageSizeLink]
-    jpg: [ImageSizeLink]
-    default: [ImageSizeLink]
-}
-
 type Query {
     slider(
         identity: String!,
