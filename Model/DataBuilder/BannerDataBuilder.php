@@ -21,6 +21,8 @@ use Psr\Log\LoggerInterface;
 
 class BannerDataBuilder
 {
+    private const array SUPPORTED_IMG_FORMATS = ['avif', 'webp', 'jpg'];
+
     public function __construct(
         private Resizer $service,
         private StoreManagerInterface $storeManager,
@@ -72,45 +74,83 @@ class BannerDataBuilder
         if (null === $image) {
             return [];
         }
+
         $result = [];
+        $supportedFormats = $this->getSupportedFormats($options);
 
-        foreach (['avif', 'webp', 'jpg'] as $ext) {
-            if (!isset($options[$ext]) || $options[$ext] !== true) {
-                continue;
-            }
+        foreach ($supportedFormats as $format) {
+            $imageData = $this->buildImageDataForFormat($format, $options, $image, $smallImage);
 
-            $link = $this->resizeImage($ext, $image, $options['width'], $options['height']);
-            $result[$ext]['image'] = $link;
-            if ($smallImage === null) {
-                continue;
+            if (!empty($imageData)) {
+                $result[$format] = $imageData;
             }
-            $result[$ext]['small_image'] = $this->resizeImage($ext, $smallImage, $options['width_small'], $options['height_small']);
         }
 
         return $result;
     }
 
+    /**
+     * Get list of supported image formats based on options
+     *
+     * @param array $options
+     * @return array
+     */
+    private function getSupportedFormats(array $options): array
+    {
+        return array_filter(self::SUPPORTED_IMG_FORMATS, function ($format) use ($options) {
+            return isset($options[$format]) && $options[$format] === true;
+        });
+    }
+
+    private function buildImageDataForFormat(string $format, array $options, ?string $image, ?string $smallImage = null): array
+    {
+        if (null === $image) {
+            return [];
+        }
+        $imageData = [];
+
+        $mainImageData = $this->processImage($format, $options, $image);
+        if (!empty($mainImageData)) {
+            $imageData['image'] = $mainImageData;
+        }
+
+        if (null == $smallImage) {
+            return $imageData;
+        }
+        // Process small_image if provided
+        $smallImageData = $this->processImage($format, $options, $image, '_small');
+        if (!empty($smallImageData)) {
+            $imageData['small_image'] = $smallImageData;
+        }
+
+        return $imageData;
+    }
+
+    private function processImage(string $format, array $options, string $image, string $type = ''): ?array
+    {
+        return $this->resizeImage($format, $image, (int) $options['width' . $type], (int) $options['height' . $type]);
+    }
+
     private function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
     {
         $result = [];
-        for ($i = 1;$i <= 3;$i++) {
-            try {
-                $file = $this->service->resizeAndConvert(
-                    $image,
-                    $ext,
-                    $width !== null ? $width * $i : null,
-                    $height !== null ? $height * $i : null,
-                );
-                if ($file === null) {
-                    continue;
-                }
-                $result = [
-                    'size' => ($width * $i) . 'w',
-                    'link' => $file,
-                ];
-            } catch (LocalizedException) {
-                continue;
+
+        try {
+            $file = $this->service->resizeAndConvert(
+                $image,
+                $ext,
+                $width !== null ? $width : null,
+                $height !== null ? $height : null,
+            );
+            if ($file === null) {
+                return $result;
             }
+            $result = [
+                'size' => ($width) . 'w',
+                'link' => $file,
+            ];
+        } catch (LocalizedException) {
+            return $result;
         }
 
         return $result;

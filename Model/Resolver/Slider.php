@@ -16,14 +16,12 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\SliderRepositoryInterface;
 use Mygento\Slider\Model\DataBuilder\BannerDataBuilder;
-use Mygento\Slider\Model\DataBuilder\Options;
 
 class Slider implements ResolverInterface
 {
     public function __construct(
         private SliderRepositoryInterface $sliderRepository,
         private BannerDataBuilder $bannerDataBuilder,
-        private Options $optionsHelper,
     ) {}
 
     /**
@@ -45,7 +43,7 @@ class Slider implements ResolverInterface
         try {
             $slider = $this->sliderRepository->getByIdentity($identity);
         } catch (\Exception) {
-            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
+            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled'));
         }
         if (!$slider->isActive()) {
             throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
@@ -56,7 +54,7 @@ class Slider implements ResolverInterface
         return [
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
-            'options' => $this->optionsHelper->getOptions($slider->getOptions()),
+            'options' => $slider->getOptionsList(),
             'content' => $slider->getContent(),
             'banners' => $banners,
         ];

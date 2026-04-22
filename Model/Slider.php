@@ -8,13 +8,29 @@
 
 namespace Mygento\Slider\Model;
 
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Registry;
+use Magento\Framework\Serialize\SerializerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
 
 class Slider extends AbstractModel implements SliderInterface
 {
     /** @inheritDoc */
     protected $_eventPrefix = 'mygento_slider_slider';
+
+    public function __construct(
+        private SerializerInterface $serializer,
+        Context $context,
+        Registry $registry,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
+        array $data = [],
+    ) {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+    }
 
     public static function getSliderOptions(): array
     {
@@ -148,28 +164,22 @@ class Slider extends AbstractModel implements SliderInterface
      */
     public function getOptionsList(): array
     {
-        $options = json_decode($this->getOptions(), true);
-        $result = [];
-        foreach ($options as $key => $value) {
-            if (is_bool($value)) {
-                $result[$key] = $value;
-                continue;
-            }
+        try {
+            $options = $this->serializer->unserialize($this->getData(self::OPTIONS));
+        } catch (\InvalidArgumentException $e) {
+            $this->_logger->error($e->getMessage());
 
-            if ($value === '' || $value === null) {
-                $result[$key] = null;
-                continue;
-            }
-
-            if (is_numeric($value)) {
-                $result[$key] = (int) $value;
-                continue;
-            }
-
-            $result[$key] = $value;
+            return [];
         }
 
-        return $result;
+        //convert empty values to null
+        return array_map(function ($value) {
+            return match (true) {
+                $value === '' => null,
+                is_numeric($value) => (int) $value,
+                default => $value,
+            };
+        }, $options);
     }
 
     /**
