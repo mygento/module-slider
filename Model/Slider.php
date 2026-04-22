@@ -148,7 +148,28 @@ class Slider extends AbstractModel implements SliderInterface
      */
     public function getOptionsList(): array
     {
-        return json_decode($this->getOptions(), true);
+        $options = json_decode($this->getOptions(), true);
+        $result = [];
+        foreach ($options as $key => $value) {
+            if (is_bool($value)) {
+                $result[$key] = $value;
+                continue;
+            }
+
+            if ($value === '' || $value === null) {
+                $result[$key] = null;
+                continue;
+            }
+
+            if (is_numeric($value)) {
+                $result[$key] = (int) $value;
+                continue;
+            }
+
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 
     /**

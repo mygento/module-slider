@@ -12,6 +12,7 @@ use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Io\File;
@@ -70,6 +71,43 @@ class Resizer
         }
 
         return $this->scale($inputPath, $outputPath, $width, $height);
+    }
+
+    /**
+     * @throws LocalizedException
+     * @throws FileSystemException
+     */
+    public function getImagePath(string $imagePath): ?string
+    {
+        $write = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        $mediaPath = $this->directoryList->getPath(DirectoryList::MEDIA);
+
+        $imageName = ltrim(str_replace($this->basePath, '', $imagePath), '/');
+        $imagePath = $mediaPath . '/' . $this->basePath . '/' . $imageName;
+
+        if (!$write->isExist($imagePath)) {
+            throw new LocalizedException(__('Source image not found: %1', $imagePath));
+        }
+
+        $imageInfo = $this->file->getPathInfo($imageName);
+        $folder = $imageInfo['dirname'] ?? '.';
+
+        $outputDir = $mediaPath . '/' . $this->basePath . '/cache' . ($folder === '.' ? '' : '/' . $folder);
+
+        $fileNoExt = $imageInfo['filename'];
+        if (!$fileNoExt) {
+            return null;
+        }
+
+        $outputPath = $outputDir . '/' . $fileNoExt . '.' . $imageInfo['extension'];
+        if ($write->isExist($outputPath)) {
+            return $this->fileToUrl($outputPath);
+        }
+        $write->create($outputDir);
+        $image = $this->imageManager->read($imagePath);
+        $image->save($outputPath, quality: 95, progressive: true);
+
+        return $this->fileToUrl($outputPath);
     }
 
     private function fileToUrl(string $file): string

@@ -30,6 +30,13 @@ interface SliderRepositoryInterface
     public function getById(int $entityId): Data\SliderInterface;
 
     /**
+     * Retrieve Slider by Identity Field
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return \Mygento\Slider\Api\Data\SliderInterface
+     */
+    public function getByIdentity(string $identity): Data\SliderInterface;
+
+    /**
      * Retrieve Slider entities matching the specified criteria
      * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Mygento\Slider\Api\Data\SliderSearchResultsInterface

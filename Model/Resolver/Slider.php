@@ -14,9 +14,18 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Mygento\Slider\Api\SliderRepositoryInterface;
+use Mygento\Slider\Model\DataBuilder\BannerProvider;
+use Mygento\Slider\Model\DataBuilder\Options;
 
 class Slider implements ResolverInterface
 {
+    public function __construct(
+        private SliderRepositoryInterface $sliderRepository,
+        private BannerProvider $bannerProvider,
+        private Options $optionsHelper,
+    ) {}
+
     /**
      * @inheritdoc
      */
@@ -33,6 +42,23 @@ class Slider implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
         }
 
-        return [];
+        try {
+            $slider = $this->sliderRepository->getByIdentity($identity);
+        } catch (\Exception) {
+            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
+        }
+        if (!$slider->isActive()) {
+            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
+        }
+
+        $banners = $this->bannerProvider->getImages($slider);
+
+        return [
+            'title' => $slider->getTitle(),
+            'identity' => $slider->getIdentity(),
+            'options' => $this->optionsHelper->getOptions($slider->getOptions()),
+            'content' => $slider->getContent(),
+            'banners' => $banners,
+        ];
     }
 }
