@@ -34,7 +34,7 @@ class Slider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
-        $identity = $args['identity'] ?? $value['identity'] ?? null;
+        $identity = $args['banner_slider'] ?? $value['banner_slider'] ?? null;
 
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));

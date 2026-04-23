@@ -88,10 +88,10 @@ type Breakpoints {
 
 type Query {
     slider(
-        identity: String!,
-): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+        banner_slider: String!,
+    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
 
     productSlider(
-        identity: String!,
+        product_slider: String!,
     ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
 }
