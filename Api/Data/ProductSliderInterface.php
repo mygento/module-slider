@@ -86,7 +86,13 @@ interface ProductSliderInterface
      * Get options
      * @return array|null
      */
-    public function getOptions(): ?array;
+    public function getOptions(bool $raw = true): ?array;
+
+    /**
+     * Get parameters
+     * @return array|null
+     */
+    public function getParameters(): ?array;
 
     /**
      * Set options

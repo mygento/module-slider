@@ -21,14 +21,13 @@ use Psr\Log\LoggerInterface;
 
 class BannerDataBuilder
 {
-    private const array SUPPORTED_IMG_FORMATS = ['avif', 'webp', 'jpg'];
-
     public function __construct(
         private Resizer $service,
         private StoreManagerInterface $storeManager,
         private Banner\CollectionFactory $factory,
         private DateTime $date,
         private LoggerInterface $logger,
+        private ImageBuilder $imageBuilder,
     ) {}
 
     public function getImages(SliderInterface $slider): array
@@ -59,7 +58,7 @@ class BannerDataBuilder
                 $item = $entity->getData();
                 $item['image_formats'] = $this->buildImageFormats($options, $item['image'] ?? null, $item['small_image'] ?? null);
                 $defaultImage = $this->service->getImagePath($item['image']);
-                $item['image_formats']['default']['image'] = ['link' =>  $defaultImage, 'size' => 'default'];
+                $item['image_formats']['default']['image'][] = ['link' =>  $defaultImage, 'size' => 'default'];
                 $result[] = $item;
             } catch (LocalizedException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -76,7 +75,7 @@ class BannerDataBuilder
         }
 
         $result = [];
-        $supportedFormats = $this->getSupportedFormats($options);
+        $supportedFormats = $this->imageBuilder->getSupportedFormats($options);
 
         foreach ($supportedFormats as $format) {
             $imageData = $this->buildImageDataForFormat($format, $options, $image, $smallImage);
@@ -87,19 +86,6 @@ class BannerDataBuilder
         }
 
         return $result;
-    }
-
-    /**
-     * Get list of supported image formats based on options
-     *
-     * @param array $options
-     * @return array
-     */
-    private function getSupportedFormats(array $options): array
-    {
-        return array_filter(self::SUPPORTED_IMG_FORMATS, function ($format) use ($options) {
-            return isset($options[$format]) && $options[$format] === true;
-        });
     }
 
     private function buildImageDataForFormat(string $format, array $options, ?string $image, ?string $smallImage = null): array
@@ -128,31 +114,6 @@ class BannerDataBuilder
 
     private function processImage(string $format, array $options, string $image, string $type = ''): ?array
     {
-        return $this->resizeImage($format, $image, (int) $options['width' . $type], (int) $options['height' . $type]);
-    }
-
-    private function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
-    {
-        $result = [];
-
-        try {
-            $file = $this->service->resizeAndConvert(
-                $image,
-                $ext,
-                $width !== null ? $width : null,
-                $height !== null ? $height : null,
-            );
-            if ($file === null) {
-                return $result;
-            }
-            $result = [
-                'size' => ($width) . 'w',
-                'link' => $file,
-            ];
-        } catch (LocalizedException) {
-            return $result;
-        }
-
-        return $result;
+        return $this->imageBuilder->resizeImage($format, $image, (int) $options['width' . $type], (int) $options['height' . $type]);
     }
 }

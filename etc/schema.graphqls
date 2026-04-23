@@ -12,13 +12,13 @@ type SliderOptions {
     autoplay: Boolean!
     infinite: Boolean!
     lazyLoad: Boolean!
-    width: String
-    height: String
-    per_page: String
-    breakpoint: String
-    width_small: String
-    height_small: String
-    autoplay_interval: String
+    width: Int
+    height: Int
+    per_page: Int
+    breakpoint: Int
+    width_small: Int
+    height_small: Int
+    autoplay_interval: Int
 }
 
 type Banner {
@@ -36,8 +36,8 @@ type SliderImageFormats {
 }
 
 type ImageFormatData {
-    image: ImageSizeLink
-    small_image: ImageSizeLink
+    image: [ImageSizeLink]
+    small_image: [ImageSizeLink]
 }
 
 type ImageSizeLink {
@@ -45,8 +45,53 @@ type ImageSizeLink {
     link: String
 }
 
+type ProductSlider {
+    title: String!
+    identity: String!
+    options: ProductSliderOptions!
+    parameters: Parameters!
+    items: [SliderProduct]
+}
+
+type SliderProduct @doc(description: "Contains product details") {
+    product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
+    image_formats: ImageFormats! @doc(description: "List image formats")
+}
+type ImageFormats {
+    avif: [ImageSizeLink]
+    webp: [ImageSizeLink]
+    jpg: [ImageSizeLink]
+    default: ImageSizeLink
+}
+
+type ProductSliderOptions {
+    dots: Boolean!
+    arrows: Boolean!
+    autoplay: Boolean!
+    infinite: Boolean!
+    lazyLoad: Boolean!
+    per_page: Int
+    per_move: Int
+    autoplay_interval: Int
+}
+
+type Parameters {
+    products_count: Int!
+    sort_order: Int!
+    breakpoints: [Breakpoints]
+}
+
+type Breakpoints {
+    width: Int
+    per_page: Int
+}
+
 type Query {
     slider(
         identity: String!,
-    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+
+    productSlider(
+        identity: String!,
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
 }
