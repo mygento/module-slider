@@ -36,7 +36,7 @@ class ProductSlider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
-        $identity = $args['product_slider'] ??  $value['product_slider'] ?? null;
+        $identity = $args['param_product_slider'] ?? $value['param_product_slider'] ?? null;
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Product Slider Identity arg is required'));
         }
@@ -44,11 +44,11 @@ class ProductSlider implements ResolverInterface
         /** @var ProductSliderInterface $slider */
         try {
             $slider = $this->productSliderRepository->getByIdentity($identity);
-        } catch (LocalizedException $e) {
-            throw new GraphQlNoSuchEntityException(__('Product Slider not found or disabled'));
+        } catch (LocalizedException) {
+            throw new GraphQlNoSuchEntityException(__('Product Slider "%1" not found or disabled', $identity));
         }
         if (!$slider->isActive()) {
-            throw new GraphQlNoSuchEntityException(__('Product Slider not found or disabled'));
+            throw new GraphQlNoSuchEntityException(__('Product Slider "%1" not found or disabled', $identity));
         }
 
         return [

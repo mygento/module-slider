@@ -34,7 +34,7 @@ class Slider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
-        $identity = $args['banner_slider'] ?? $value['banner_slider'] ?? null;
+        $identity = $args['param_banner_slider'] ?? $value['param_banner_slider'] ?? null;
 
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Slider Identity arg is required'));
@@ -43,10 +43,10 @@ class Slider implements ResolverInterface
         try {
             $slider = $this->sliderRepository->getByIdentity($identity);
         } catch (\Exception) {
-            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled'));
+            throw new GraphQlNoSuchEntityException(__('Slider "%1" not found or disabled', $identity));
         }
         if (!$slider->isActive()) {
-            throw new GraphQlNoSuchEntityException(__('Slider not found or disabled '));
+            throw new GraphQlNoSuchEntityException(__('Slider "%1" not found or disabled', $identity));
         }
 
         $banners = $this->bannerDataBuilder->getImages($slider);
