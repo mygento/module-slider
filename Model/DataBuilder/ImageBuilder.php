@@ -28,7 +28,7 @@ class ImageBuilder
         private State $appState,
     ) {}
 
-    public function resizeImage(string $ext = null, string $image = null, ?int $width = null, ?int $height = null): array
+    public function resizeImage(string $ext, string $image, ?int $width = null, ?int $height = null): array
     {
         $result = [];
         for ($i = 1;$i <= 3;$i++) {
