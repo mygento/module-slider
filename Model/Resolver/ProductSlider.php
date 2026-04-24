@@ -36,7 +36,7 @@ class ProductSlider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
-        $identity = $args['param_product_slider'] ?? $value['param_product_slider'] ?? null;
+        $identity = $args['identity'] ?? $value['identity'] ?? null;
         if (!$identity) {
             throw new GraphQlNoSuchEntityException(__('Product Slider Identity arg is required'));
         }
