@@ -15,14 +15,12 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
-use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Psr\Log\LoggerInterface;
 
 class BannerDataBuilder
 {
     public function __construct(
-        private Resizer $service,
         private StoreManagerInterface $storeManager,
         private Banner\CollectionFactory $factory,
         private DateTime $date,
@@ -56,9 +54,7 @@ class BannerDataBuilder
         foreach ($collection as $entity) {
             try {
                 $item = $entity->getData();
-                $item['image_formats'] = $this->buildImageFormats($options, $item['image'] ?? null, $item['small_image'] ?? null);
-                $defaultImage = $this->service->getImagePath($item['image']);
-                $item['image_formats']['default']['image'][] = ['link' =>  $defaultImage, 'size' => 'default'];
+                $item['image_formats'] = $this->buildImageFormats($options, $item);
                 $result[] = $item;
             } catch (LocalizedException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -68,52 +64,72 @@ class BannerDataBuilder
         return $result;
     }
 
-    private function buildImageFormats(array $options, ?string $image = null, ?string $smallImage = null): array
+    private function buildImageFormats(array $options, array $item): ?array
     {
-        if (null === $image) {
-            return [];
+        $image = $item['image'] ?? null;
+        $smallImage = $item['small_image'] ?? null;
+
+        if (null === $image && null === $smallImage) {
+            return null;
         }
+        $result = $this->buildDefaultImages($options, $image, $smallImage);
 
-        $result = [];
         $supportedFormats = $this->imageBuilder->getSupportedFormats($options);
-
         foreach ($supportedFormats as $format) {
-            $imageData = $this->buildImageDataForFormat($format, $options, $image, $smallImage);
-
-            if (!empty($imageData)) {
-                $result[$format] = $imageData;
+            $mainImageData = $this->processImage($format, $options, $image);
+            if (!empty($mainImageData)) {
+                $result[$format]['image'] = $mainImageData;
             }
+
+            if (null == $smallImage) {
+                continue;
+            }
+            // Process small_image if provided
+            $smallImageData = $this->processImage($format, $options, $image, '_small');
+            if (!empty($smallImageData)) {
+                $result[$format]['small_image'] = $smallImageData;
+            }
+
         }
 
         return $result;
     }
 
-    private function buildImageDataForFormat(string $format, array $options, ?string $image, ?string $smallImage = null): array
+    private function processImage(string $format, array $options, string $image, string $configPrefix = ''): ?array
     {
-        if (null === $image) {
-            return [];
-        }
-        $imageData = [];
+        return $this->imageBuilder->resizeImage($format, $image, $options['width' . $configPrefix], $options['height' . $configPrefix]);
+    }
 
-        $mainImageData = $this->processImage($format, $options, $image);
+    private function buildDefaultImages(array $options, ?string $image,?string $smallImage): array
+    {
+        $result = [];
+
+        $mainImageData = $this->getResizedImage($options, $image);
         if (!empty($mainImageData)) {
-            $imageData['image'] = $mainImageData;
+            $result['default']['image'][] = $mainImageData;
+        }
+        if (empty($smallImage)) {
+            return $result;
         }
 
-        if (null == $smallImage) {
-            return $imageData;
-        }
-        // Process small_image if provided
-        $smallImageData = $this->processImage($format, $options, $image, '_small');
+        $smallImageData = $this->getResizedImage($options, $image, '_small');
         if (!empty($smallImageData)) {
-            $imageData['small_image'] = $smallImageData;
+            $result['default']['small_image'][] = $smallImageData;
+        }
+        return $result;
+    }
+
+    private function getResizedImage(array $options, ?string $image = null, ?string $configPrefix = ''): ?array
+    {
+        if (!$image) {
+            return null;
+        }
+        try {
+            $imageData = $this->imageBuilder->resizeOne($image, $options['width' . $configPrefix], $options['height' . $configPrefix]);
+        } catch (LocalizedException) {
+            return null;
         }
 
         return $imageData;
-    }
-
-    private function processImage(string $format, array $options, string $image, string $type = ''): ?array
-    {
-        return $this->imageBuilder->resizeImage($format, $image, (int) $options['width' . $type], (int) $options['height' . $type]);
     }
 }

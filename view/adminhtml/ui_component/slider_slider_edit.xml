@@ -303,13 +303,13 @@
                 <field name="image" component="Magento_Ui/js/form/element/abstract" formElement="input">
                     <settings>
                         <elementTmpl>ui/dynamic-rows/cells/thumbnail</elementTmpl>
-                        <label translate="true">image</label>
+                        <label translate="true">Image</label>
                     </settings>
                 </field>
                 <field name="small_image" component="Magento_Ui/js/form/element/abstract" formElement="input">
                     <settings>
                         <elementTmpl>ui/dynamic-rows/cells/thumbnail</elementTmpl>
-                        <label translate="true">image</label>
+                        <label translate="true">Small Image</label>
                     </settings>
                 </field>
                 <field name="position">

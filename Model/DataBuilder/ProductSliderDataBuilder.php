@@ -91,15 +91,13 @@ class ProductSliderDataBuilder
         $img = $product->getData('thumbnail');
         $options = $slider->getOptions();
         $options = $options['options'];
-        $jpg = isset($options['jpg']) && $options['jpg'] === true;
         $sizes = $this->imageBuilder->getSizes($product);
         $width = $sizes['width'] ?? null;
         $height = $sizes['height'] ?? null;
 
         try {
             $result = $this->buildImageFormats($options, $img ?? null, $width, $height);
-            $result['default'] = ['size' => 'default', 'link' => $this->imageBuilder->resizeAndConvert($img ?? null, $jpg ? 'jpg' : null, $width, $height)];
-
+            $result['default'] = $this->imageBuilder->resizeOne($img, $width, $height);
             return $result;
         } catch (LocalizedException) {
             return [];

@@ -16,42 +16,58 @@ use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Filesystem\Io\File;
 use Mygento\Slider\Model\Resizer;
 
 class ImageBuilder
 {
-    private const SUPPORTED_IMG_FORMATS = ['avif', 'webp', 'jpg'];
+    private const SUPPORTED_IMG_FORMATS = ['jpg', 'webp', 'avif'];
 
     public function __construct(
         private Resizer $service,
         private ImageFactory $imageFactory,
         private State $appState,
+        private File $file,
     ) {}
 
     public function resizeImage(string $ext, string $image, ?int $width = null, ?int $height = null): array
     {
         $result = [];
-        for ($i = 1;$i <= 3;$i++) {
+        for ($i = 3; $i >= 1; $i--) {
             try {
-                $file = $this->service->resizeAndConvert(
-                    $image,
-                    $ext,
-                    $width !== null ? $width * $i : null,
-                    $height !== null ? $height * $i : null,
-                );
-                if ($file === null) {
-                    continue;
+                $file = $this->resizeOne($image, $width, $height, $ext, $i);
+                if ($file) {
+                    $result[] = $file;
                 }
-                $result[] = [
-                    'size' => ($width * $i) . 'w',
-                    'link' => $file,
-                ];
             } catch (LocalizedException) {
                 continue;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @throws LocalizedException
+     */
+    public function resizeOne(string $image, ?int $width = null, ?int $height = null, ?string $ext = null, ?int $coeff = 1): ?array
+    {
+        if (!$ext) {
+            $ext = $this->getImageExt($image);
+        }
+        $file = $this->service->resizeAndConvert(
+            $image,
+            $ext,
+            $width !== null ? $width * $coeff : null,
+            $height !== null ? $height * $coeff : null,
+        );
+        if ($file === null) {
+            return null;
+        }
+       return [
+            'size' => ($width * $coeff) . 'w',
+            'link' => $file,
+        ];
     }
 
     /**
@@ -94,5 +110,12 @@ class ImageBuilder
             'width' => $width,
             'height' => $height,
         ];
+    }
+
+    private function getImageExt(string $image): string
+    {
+        $info = $this->file->getPathInfo($image);
+
+        return (string) $info['extension'];
     }
 }
