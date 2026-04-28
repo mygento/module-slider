@@ -64,7 +64,8 @@ class ImageBuilder
         if ($file === null) {
             return null;
         }
-       return [
+
+        return [
             'size' => ($width * $coeff) . 'w',
             'link' => $file,
         ];

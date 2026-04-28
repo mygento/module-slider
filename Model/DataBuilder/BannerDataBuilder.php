@@ -89,7 +89,6 @@ class BannerDataBuilder
             if (!empty($smallImageData)) {
                 $result[$format]['small_image'] = $smallImageData;
             }
-
         }
 
         return $result;
@@ -100,7 +99,7 @@ class BannerDataBuilder
         return $this->imageBuilder->resizeImage($format, $image, $options['width' . $configPrefix], $options['height' . $configPrefix]);
     }
 
-    private function buildDefaultImages(array $options, ?string $image,?string $smallImage): array
+    private function buildDefaultImages(array $options, ?string $image, ?string $smallImage): array
     {
         $result = [];
 
@@ -116,6 +115,7 @@ class BannerDataBuilder
         if (!empty($smallImageData)) {
             $result['default']['small_image'][] = $smallImageData;
         }
+
         return $result;
     }
 
@@ -124,6 +124,7 @@ class BannerDataBuilder
         if (!$image) {
             return null;
         }
+
         try {
             $imageData = $this->imageBuilder->resizeOne($image, $options['width' . $configPrefix], $options['height' . $configPrefix]);
         } catch (LocalizedException) {
