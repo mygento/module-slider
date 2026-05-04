@@ -101,7 +101,9 @@ class ProductSliderDataBuilder
 
             return $result;
         } catch (LocalizedException) {
-            return [];
+            $result['default'] = null;
+
+            return $result;
         }
     }
 

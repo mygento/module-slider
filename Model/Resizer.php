@@ -36,6 +36,16 @@ class Resizer
         $this->imageManager = new ImageManager($driver);
     }
 
+    /**
+     * @param string $imagePath
+     * @param string|null $ext
+     * @param int|null $width
+     * @param int|null $height
+     *
+     * @throws FileSystemException
+     * @throws LocalizedException
+     * @return string|null
+     */
     public function resizeAndConvert(string $imagePath, ?string $ext, ?int $width = null, ?int $height = null): ?string
     {
         $write = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);

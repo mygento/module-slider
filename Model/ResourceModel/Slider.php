@@ -47,9 +47,9 @@ class Slider extends AbstractDb
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function load(AbstractModel $object, $value, $field = [])
+    public function load(AbstractModel $object, $value, $field = null)
     {
-        return $this->entityManager->load($object, $value, $field);
+        return $this->entityManager->load($object, $value);
     }
 
     /**

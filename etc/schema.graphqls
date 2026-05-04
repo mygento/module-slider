@@ -14,11 +14,11 @@ type SliderOptions {
     lazyLoad: Boolean!
     width: Int
     height: Int
-    per_page: Int
-    breakpoint: Int
+    per_page: Int!
+    breakpoint: Int!
     width_small: Int
     height_small: Int
-    autoplay_interval: Int
+    autoplay_interval: Int!
 }
 
 type Banner {
@@ -61,7 +61,7 @@ type ImageFormats {
     avif: [ImageSizeLink]
     webp: [ImageSizeLink]
     jpg: [ImageSizeLink]
-    default: ImageSizeLink
+    default: ImageSizeLink!
 }
 
 type ProductSliderOptions {
@@ -70,9 +70,9 @@ type ProductSliderOptions {
     autoplay: Boolean!
     infinite: Boolean!
     lazyLoad: Boolean!
-    per_page: Int
-    per_move: Int
-    autoplay_interval: Int
+    per_page: Int!
+    per_move: Int!
+    autoplay_interval: Int!
 }
 
 type Parameters {

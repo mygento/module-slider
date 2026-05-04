@@ -8,29 +8,13 @@
 
 namespace Mygento\Slider\Model;
 
-use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\Context;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Registry;
-use Magento\Framework\Serialize\SerializerInterface;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 
 class ProductSlider extends AbstractModel implements ProductSliderInterface
 {
     /** @inheritDoc */
     protected $_eventPrefix = 'mygento_slider_product_slider';
-
-    public function __construct(
-        private SerializerInterface $serializer,
-        Context $context,
-        Registry $registry,
-        ?AbstractResource $resource = null,
-        ?AbstractDb $resourceCollection = null,
-        array $data = [],
-    ) {
-        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-    }
 
     public static function getSliderOptions(): array
     {
@@ -133,18 +117,9 @@ class ProductSlider extends AbstractModel implements ProductSliderInterface
     /**
      * Get options
      */
-    public function getOptions(bool $raw = true): ?array
+    public function getOptions(): ?array
     {
-        $options = $this->getOptionsArray();
-
-        return $raw ? $options : $this->clearOptions($options['options']);
-    }
-
-    public function getParameters(): ?array
-    {
-        $options = $this->getOptionsArray();
-
-        return $this->clearOptions($options['parameters']);
+        return json_decode($this->getData(self::OPTIONS) ?? 'null', true);
     }
 
     /**
@@ -191,31 +166,5 @@ class ProductSlider extends AbstractModel implements ProductSliderInterface
     protected function _construct()
     {
         $this->_init(ResourceModel\ProductSlider::class);
-    }
-
-    private function getOptionsArray(): array
-    {
-        try {
-            return $this->serializer->unserialize($this->getData(self::OPTIONS));
-        } catch (\InvalidArgumentException $e) {
-            $this->_logger->error($e->getMessage());
-        }
-
-        return [];
-    }
-
-    private function clearOptions(array $options): array
-    {
-        //convert empty values to null recursive if value is an array
-        $callback = function ($value) use (&$callback) {
-            return match (true) {
-                is_array($value) => array_map($callback, $value),
-                $value === '' => null,
-                is_numeric($value) => (int) $value,
-                default => $value,
-            };
-        };
-
-        return array_map($callback, $options);
     }
 }
