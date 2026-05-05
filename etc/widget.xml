@@ -4,7 +4,7 @@
         <label translate="true">Mygento Banner Slider</label>
         <description translate="true">Mygento Banner Slider</description>
         <parameters>
-            <parameter name="banner_slider" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Config\Source\BannerSliderList">
+            <parameter name="identity" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Config\Source\BannerSliderList">
                 <label>Select Banner Slider</label>
             </parameter>
         </parameters>
@@ -13,7 +13,7 @@
         <label translate="true">Mygento Product Slider</label>
         <description translate="true">Mygento Product Slider</description>
         <parameters>
-            <parameter name="product_slider" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Config\Source\ProductSliderList">
+            <parameter name="identity" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Config\Source\ProductSliderList">
                 <label>Select Product Slider</label>
             </parameter>
         </parameters>

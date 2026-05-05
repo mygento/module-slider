@@ -1,0 +1,97 @@
+type Slider {
+    title: String!
+    identity: String!
+    options: SliderOptions!
+    banners: [Banner!]! @doc(description: "List of banners in the slider")
+}
+
+type SliderOptions {
+    dots: Boolean!
+    arrows: Boolean!
+    preload: Boolean!
+    autoplay: Boolean!
+    infinite: Boolean!
+    lazyLoad: Boolean!
+    width: Int
+    height: Int
+    per_page: Int!
+    breakpoint: Int!
+    width_small: Int
+    height_small: Int
+    autoplay_interval: Int!
+}
+
+type Banner {
+    image: String!
+    link: String!
+    name: String!
+    image_formats: SliderImageFormats! @doc(description: "List image formats")
+}
+
+type SliderImageFormats {
+    avif: ImageFormatData
+    webp: ImageFormatData
+    jpg: ImageFormatData
+    default: ImageFormatData
+}
+
+type ImageFormatData {
+    image: [ImageSizeLink]
+    small_image: [ImageSizeLink]
+}
+
+type ImageSizeLink {
+    size: String
+    link: String
+}
+
+type ProductSlider {
+    title: String!
+    identity: String!
+    options: ProductSliderOptions!
+    parameters: Parameters!
+    items: [SliderProduct]
+}
+
+type SliderProduct @doc(description: "Contains product details") {
+    product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
+    image_formats: ImageFormats! @doc(description: "List image formats")
+}
+type ImageFormats {
+    avif: [ImageSizeLink]
+    webp: [ImageSizeLink]
+    jpg: [ImageSizeLink]
+    default: ImageSizeLink!
+}
+
+type ProductSliderOptions {
+    dots: Boolean!
+    arrows: Boolean!
+    autoplay: Boolean!
+    infinite: Boolean!
+    lazyLoad: Boolean!
+    per_page: Int!
+    per_move: Int!
+    autoplay_interval: Int!
+}
+
+type Parameters {
+    products_count: Int!
+    sort_order: Int!
+    breakpoints: [Breakpoints]
+}
+
+type Breakpoints {
+    width: Int
+    per_page: Int
+}
+
+type Query {
+    slider(
+        identity: String!,
+    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+
+    productSlider(
+        identity: String!,
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+}
