@@ -30,7 +30,7 @@ class BannerDataBuilder
 
     public function getImages(SliderInterface $slider): array
     {
-        $options = $slider->getOptionsList();
+        $options = $this->prepareOptions($slider->getOptionsList());
         $currentDate = $this->date->gmtDate();
 
         /** @var Banner\Collection $collection */
@@ -62,6 +62,18 @@ class BannerDataBuilder
         }
 
         return $result;
+    }
+
+    public function prepareOptions(array $options): array
+    {
+        //convert empty values to null
+        return array_map(function ($value) {
+            return match (true) {
+                $value === '' => null,
+                is_numeric($value) => (int) $value,
+                default => $value,
+            };
+        }, $options);
     }
 
     private function buildImageFormats(array $options, array $item): ?array
