@@ -19,7 +19,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
 $thumbWidth     = $block->getIntegerOption($options, 'thumbnails_width');
 $thumbHeight    = $block->getIntegerOption($options, 'thumbnails_height');
 
-$thumbWidthTag  = $thumbWidth  !== null ? ' width="'  . $thumbWidth  . '"' : '';
+$thumbWidthTag  = $thumbWidth  !== null ? ' width="' . $thumbWidth . '"' : '';
 $thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
 ?>
 <?php if (count($images) === 1): ?>
@@ -96,7 +96,7 @@ $thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
                 $thumbSrc = $thumbImgs['image'] ?? $img['default'];
                 $thumbMq  = $hasThumbSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
                 $thumbMqS = $hasThumbSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
-            ?>
+                ?>
                 <li class="splide__slide">
                     <picture>
                         <?php if (!empty($thumbImgs)): ?>

@@ -85,7 +85,7 @@ class BannerSlider extends Template implements BlockInterface
             'pagination' => $options['thumbnails_pagination'],
             'isNavigation' => $options['thumbnails_isNavigation'],
             'arrows' => $options['thumbnails_arrows'],
-            'drag' => false
+            'drag' => false,
         ];
 
         if ($options['thumbnails_gap']) {
