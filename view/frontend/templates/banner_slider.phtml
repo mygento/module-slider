@@ -15,6 +15,12 @@ $heightTag = $height !== null ? ' height="' . $height . '"' : '';
 
 $widthSTag = $widthS !== null ? ' width="' . $widthS . '"' : '';
 $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
+
+$thumbWidth     = $block->getIntegerOption($options, 'thumbnails_width');
+$thumbHeight    = $block->getIntegerOption($options, 'thumbnails_height');
+
+$thumbWidthTag  = $thumbWidth  !== null ? ' width="'  . $thumbWidth  . '"' : '';
+$thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
 ?>
 <?php if (count($images) === 1): ?>
 <div id="<?= $block->getSliderIdentifier() ?>" aria-label="<?= $block->getTitle() ?>">
@@ -84,8 +90,23 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
     <div class="splide__track">
         <ul class="splide__list">
             <?php foreach ($images as $index => $img): ?>
+            <?php
+                $thumbImgs = $img['thumbnail_images'];
+                $hasThumbSmall = !empty($thumbImgs['small_image']);
+                $thumbSrc = $thumbImgs['image'] ?? $img['default'];
+                $thumbMq  = $hasThumbSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
+                $thumbMqS = $hasThumbSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
+            ?>
                 <li class="splide__slide">
-                    <img src="<?= $img['default'] ?>" alt="<?= $img['name']?>">
+                    <picture>
+                        <?php if (!empty($thumbImgs)): ?>
+                            <?php if ($hasThumbSmall): ?>
+                            <source<?= $thumbWidthTag ?><?= $thumbHeightTag ?><?= $thumbMqS ?> srcset="<?= $thumbImgs['small_image'] ?>" type="image/jpeg" />
+                            <?php endif; ?>
+                            <source<?= $thumbWidthTag ?><?= $thumbHeightTag ?><?= $thumbMq ?> srcset="<?= $thumbSrc ?>" type="image/jpeg" />
+                        <?php endif; ?>
+                        <img src="<?= $img['default'] ?>" alt="<?= $img['name'] ?>"<?= $thumbWidthTag ?><?= $thumbHeightTag ?> loading="lazy" />
+                    </picture>
                 </li>
             <?php endforeach; ?>
         </ul>
