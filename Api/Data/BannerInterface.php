@@ -19,6 +19,7 @@ interface BannerInterface
     public const FROM_DATE = 'from_date';
     public const TO_DATE = 'to_date';
     public const LINK = 'link';
+    public const CONTENT = 'content';
     public const IMAGE = 'image';
     public const SMALL_IMAGE = 'small_image';
     public const STORE_ID = 'store_id';
@@ -95,6 +96,18 @@ interface BannerInterface
      * @return $this
      */
     public function setLink(?string $link): self;
+
+    /**
+     * Get content
+     * @return string|null
+     */
+    public function getContent(): ?string;
+
+    /**
+     * Set content
+     * @return $this
+     */
+    public function setContent(?string $content): self;
 
     /**
      * Get image

@@ -49,6 +49,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
         <ul class="splide__list">
 <?php foreach ($images as $index => $img): ?>
 <?php $hasLink = isset($img['link']) &&  '' !== trim($img['link']); ?>
+<?php $content = (string) ($img['content'] ?? ''); ?>
             <li class="splide__slide">
 <?php if ($hasLink): ?>
                 <a href="<?= $escaper->escapeUrl($img['link']) ?>">
@@ -69,6 +70,9 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
                 </picture>
 <?php if ($hasLink): ?>
                 </a>
+<?php endif; ?>
+<?php if ($content !== ''): ?>
+    <?= /* @noEscape */ $content ?>
 <?php endif; ?>
             </li>
 <?php endforeach; ?>

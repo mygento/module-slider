@@ -124,6 +124,22 @@
                 </validation>
             </settings>
         </field>
+        <field name="content" formElement="wysiwyg" template="ui/form/field">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">banner</item>
+                </item>
+            </argument>
+            <settings>
+                <additionalClasses>
+                    <class name="admin__field-wide">true</class>
+                </additionalClasses>
+                <dataType>text</dataType>
+                <label translate="true">Content</label>
+                <visible>true</visible>
+                <dataScope>content</dataScope>
+            </settings>
+        </field>
         <field name="link" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
