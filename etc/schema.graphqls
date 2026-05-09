@@ -22,6 +22,7 @@ type SliderOptions {
 }
 
 type Banner {
+    uid: ID!
     image: String!
     link: String!
     name: String!

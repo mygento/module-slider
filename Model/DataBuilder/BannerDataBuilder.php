@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Mygento\Slider\Model\DataBuilder;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\GraphQl\Query\Uid;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
@@ -26,6 +27,7 @@ class BannerDataBuilder
         private DateTime $date,
         private LoggerInterface $logger,
         private ImageBuilder $imageBuilder,
+        private Uid $idEncoder,
     ) {}
 
     public function getImages(SliderInterface $slider): array
@@ -51,10 +53,12 @@ class BannerDataBuilder
         ]);
 
         $result = [];
+        /** @var BannerInterface $entity */
         foreach ($collection as $entity) {
             try {
                 $item = $entity->getData();
                 $item['image_formats'] = $this->buildImageFormats($options, $item);
+                $item['uid'] = $this->idEncoder->encode((string) $entity->getId());
                 $result[] = $item;
             } catch (LocalizedException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
@@ -97,7 +101,7 @@ class BannerDataBuilder
                 continue;
             }
             // Process small_image if provided
-            $smallImageData = $this->processImage($format, $options, $image, '_small');
+            $smallImageData = $this->processImage($format, $options, $smallImage, '_small');
             if (!empty($smallImageData)) {
                 $result[$format]['small_image'] = $smallImageData;
             }
@@ -123,7 +127,7 @@ class BannerDataBuilder
             return $result;
         }
 
-        $smallImageData = $this->getResizedImage($options, $image, '_small');
+        $smallImageData = $this->getResizedImage($options, $smallImage, '_small');
         if (!empty($smallImageData)) {
             $result['default']['small_image'][] = $smallImageData;
         }
