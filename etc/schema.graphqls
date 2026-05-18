@@ -24,7 +24,7 @@ type SliderOptions {
 type Banner {
     uid: ID!
     image: String!
-    link: String!
+    link: String
     name: String!
     image_formats: SliderImageFormats! @doc(description: "List image formats")
 }
@@ -33,7 +33,12 @@ type SliderImageFormats {
     avif: ImageFormatData
     webp: ImageFormatData
     jpg: ImageFormatData
-    default: ImageFormatData
+    default: DefaultImages
+}
+
+type DefaultImages {
+    image: String!
+    small_image: String
 }
 
 type ImageFormatData {
@@ -62,7 +67,7 @@ type ImageFormats {
     avif: [ImageSizeLink]
     webp: [ImageSizeLink]
     jpg: [ImageSizeLink]
-    default: ImageSizeLink!
+    default: String
 }
 
 type ProductSliderOptions {

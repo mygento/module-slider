@@ -21,6 +21,8 @@ use Psr\Log\LoggerInterface;
 
 class BannerDataBuilder
 {
+    private array $sliderBanners = [];
+
     public function __construct(
         private StoreManagerInterface $storeManager,
         private Banner\CollectionFactory $factory,
@@ -32,7 +34,11 @@ class BannerDataBuilder
 
     public function getImages(SliderInterface $slider): array
     {
-        $options = $this->prepareOptions($slider->getOptionsList());
+        $storeId = $this->storeManager->getStore()->getId();
+        if (isset($this->sliderBanners[$slider->getId()][$storeId])) {
+            return $this->sliderBanners[$slider->getId()][$storeId];
+        }
+        $options = $this->prepareData($slider->getOptionsList());
         $currentDate = $this->date->gmtDate();
 
         /** @var Banner\Collection $collection */
@@ -41,7 +47,7 @@ class BannerDataBuilder
         $collection->fetchItemsWithPositionBySlider((int) $slider->getId());
         $collection->addFilter(
             BannerInterface::STORE_ID,
-            ['in' => $this->storeManager->getStore()->getId()],
+            ['in' => $storeId],
         );
         $collection->addFieldToFilter(BannerInterface::FROM_DATE, [
             ['null' => true],
@@ -56,7 +62,7 @@ class BannerDataBuilder
         /** @var BannerInterface $entity */
         foreach ($collection as $entity) {
             try {
-                $item = $entity->getData();
+                $item = $this->prepareData($entity->getData());
                 $item['image_formats'] = $this->buildImageFormats($options, $item);
                 $item['uid'] = $this->idEncoder->encode((string) $entity->getId());
                 $result[] = $item;
@@ -64,11 +70,12 @@ class BannerDataBuilder
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
             }
         }
+        $this->sliderBanners[$slider->getId()][$storeId] = $result;
 
         return $result;
     }
 
-    public function prepareOptions(array $options): array
+    public function prepareData(array $data): array
     {
         //convert empty values to null
         return array_map(function ($value) {
@@ -77,7 +84,7 @@ class BannerDataBuilder
                 is_numeric($value) => (int) $value,
                 default => $value,
             };
-        }, $options);
+        }, $data);
     }
 
     private function buildImageFormats(array $options, array $item): ?array
@@ -98,9 +105,9 @@ class BannerDataBuilder
             }
 
             if (null == $smallImage) {
-                continue;
+                // Process main image as small_image
+                $smallImage = $image;
             }
-            // Process small_image if provided
             $smallImageData = $this->processImage($format, $options, $smallImage, '_small');
             if (!empty($smallImageData)) {
                 $result[$format]['small_image'] = $smallImageData;
@@ -120,16 +127,16 @@ class BannerDataBuilder
         $result = [];
 
         $mainImageData = $this->getResizedImage($options, $image);
-        if (!empty($mainImageData)) {
-            $result['default']['image'][] = $mainImageData;
+        if (!empty($mainImageData['link'])) {
+            $result['default']['image'] = $mainImageData['link'];
         }
         if (empty($smallImage)) {
             return $result;
         }
 
         $smallImageData = $this->getResizedImage($options, $smallImage, '_small');
-        if (!empty($smallImageData)) {
-            $result['default']['small_image'][] = $smallImageData;
+        if (!empty($smallImageData['link'])) {
+            $result['default']['small_image'] = $smallImageData['link'];
         }
 
         return $result;

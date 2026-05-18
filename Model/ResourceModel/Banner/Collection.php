@@ -56,7 +56,7 @@ class Collection extends AbstractCollection
             ['position'],
         );
         $this->addFieldToFilter('items.slider_id', $sliderId);
-        $this->setOrder('position', 'DESC');
+        $this->setOrder('position', 'ASC');
         $this->setOrder('id', 'DESC');
 
         return $this;
