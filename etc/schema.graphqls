@@ -1,4 +1,5 @@
 type Slider {
+    uid: ID!
     title: String!
     identity: String!
     options: SliderOptions!
@@ -52,6 +53,7 @@ type ImageSizeLink {
 }
 
 type ProductSlider {
+    uid: ID!
     title: String!
     identity: String!
     options: ProductSliderOptions!
@@ -95,9 +97,10 @@ type Breakpoints {
 type Query {
     slider(
         identity: String!,
-    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider") @cache(cacheIdentity: "Mygento\\Slider\\Model\\Resolver\\Cache\\SliderCacheIdentity")
 
     productSlider(
         identity: String!,
-    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider") @cache(cacheIdentity: "Mygento\\Slider\\Model\\Resolver\\Cache\\ProductSliderCacheIdentity")
+
 }

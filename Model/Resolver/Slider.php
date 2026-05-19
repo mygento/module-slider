@@ -13,6 +13,7 @@ namespace Mygento\Slider\Model\Resolver;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
+use Magento\Framework\GraphQl\Query\Uid;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\SliderRepositoryInterface;
 use Mygento\Slider\Model\DataBuilder\BannerDataBuilder;
@@ -22,6 +23,7 @@ class Slider implements ResolverInterface
     public function __construct(
         private SliderRepositoryInterface $sliderRepository,
         private BannerDataBuilder $bannerDataBuilder,
+        private Uid $idEncoder,
     ) {}
 
     /**
@@ -52,6 +54,7 @@ class Slider implements ResolverInterface
         $banners = $this->bannerDataBuilder->getImages($slider);
 
         return [
+            'uid' => $this->idEncoder->encode((string) $slider->getId()),
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
             'options' => $this->bannerDataBuilder->prepareData($slider->getOptionsList()),

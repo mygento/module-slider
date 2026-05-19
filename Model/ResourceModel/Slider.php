@@ -15,6 +15,7 @@ use Magento\Framework\Model\ResourceModel\Db\Context;
 
 class Slider extends AbstractDb
 {
+    public const CACHE_TAG = 'mygento_slider';
     public const TABLE_NAME = 'mygento_slider';
     public const TABLE_PRIMARY_KEY = 'id';
 
