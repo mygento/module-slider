@@ -157,14 +157,19 @@
                 <label translate="true">To Date</label>
             </settings>
         </column>
-        <column name="link">
+        <column name="entity_type" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Entity Type</label>
+                <options class="Mygento\Slider\Model\Source\EntityType"/>
+            </settings>
+        </column>
+        <column name="entity_identifier">
             <settings>
                 <filter>text</filter>
                 <dataType>text</dataType>
-                <editor>
-                    <editorType>text</editorType>
-                </editor>
-                <label translate="true">Link</label>
+                <label translate="true">Identifier</label>
             </settings>
         </column>
         <column name="image" component="Magento_Ui/js/grid/columns/thumbnail" class="Mygento\Slider\Ui\Component\Listing\Columns\Image">

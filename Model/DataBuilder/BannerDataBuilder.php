@@ -16,6 +16,7 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
+use Mygento\Slider\Model\Builder\LinkResolver;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Psr\Log\LoggerInterface;
 
@@ -28,6 +29,7 @@ class BannerDataBuilder
         private LoggerInterface $logger,
         private ImageBuilder $imageBuilder,
         private Uid $idEncoder,
+        private LinkResolver $linkResolver,
     ) {}
 
     public function getImages(SliderInterface $slider): array
@@ -65,7 +67,10 @@ class BannerDataBuilder
             }
         }
 
-        return $result;
+        return $this->linkResolver->addLinks(
+            $result,
+            (int) $this->storeManager->getStore()->getId(),
+        );
     }
 
     public function prepareOptions(array $options): array
