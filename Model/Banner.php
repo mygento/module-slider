@@ -98,19 +98,35 @@ class Banner extends AbstractModel implements BannerInterface
     }
 
     /**
-     * Get link
+     * Get entity type
      */
-    public function getLink(): ?string
+    public function getEntityType(): ?string
     {
-        return $this->getData(self::LINK);
+        return $this->getData(self::ENTITY_TYPE);
     }
 
     /**
-     * Set link
+     * Set entity type
      */
-    public function setLink(?string $link): self
+    public function setEntityType(?string $entityType): self
     {
-        return $this->setData(self::LINK, $link);
+        return $this->setData(self::ENTITY_TYPE, $entityType);
+    }
+
+    /**
+     * Get entity identifier
+     */
+    public function getEntityIdentifier(): ?string
+    {
+        return $this->getData(self::ENTITY_IDENTIFIER);
+    }
+
+    /**
+     * Set entity identifier
+     */
+    public function setEntityIdentifier(?string $entityIdentifier): self
+    {
+        return $this->setData(self::ENTITY_IDENTIFIER, $entityIdentifier);
     }
 
     /**

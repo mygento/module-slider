@@ -14,6 +14,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
+use Mygento\Slider\Model\Builder\LinkResolver;
 use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Mygento\Slider\Model\ResourceModel\Slider;
@@ -27,6 +28,7 @@ class BannerSlider extends Template implements BlockInterface
         private Slider\CollectionFactory $sliderCollectionFactory,
         private Banner\CollectionFactory $factory,
         private DateTime $date,
+        private LinkResolver $linkResolver,
         Template\Context $context,
         array $data = [],
     ) {
@@ -99,7 +101,10 @@ class BannerSlider extends Template implements BlockInterface
             $result[] = $item;
         }
 
-        return $result;
+        return $this->linkResolver->addLinks(
+            $result,
+            (int) $this->_storeManager->getStore()->getId(),
+        );
     }
 
     public function getSliderIdentifier(): string

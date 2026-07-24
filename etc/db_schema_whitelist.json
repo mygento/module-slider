@@ -1,0 +1,16 @@
+{
+  "mygento_slider_banner": {
+    "column": {
+      "id": true,
+      "is_active": true,
+      "name": true,
+      "from_date": true,
+      "to_date": true,
+      "link": true,
+      "entity_type": true,
+      "entity_identifier": true,
+      "image": true,
+      "small_image": true
+    }
+  }
+}
