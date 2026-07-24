@@ -1,4 +1,5 @@
 type Slider {
+    uid: ID!
     title: String!
     identity: String!
     options: SliderOptions!
@@ -24,7 +25,7 @@ type SliderOptions {
 type Banner {
     uid: ID!
     image: String!
-    link: String!
+    link: String
     name: String!
     image_formats: SliderImageFormats! @doc(description: "List image formats")
 }
@@ -33,7 +34,12 @@ type SliderImageFormats {
     avif: ImageFormatData
     webp: ImageFormatData
     jpg: ImageFormatData
-    default: ImageFormatData
+    default: DefaultImages
+}
+
+type DefaultImages {
+    image: String!
+    small_image: String
 }
 
 type ImageFormatData {
@@ -47,6 +53,7 @@ type ImageSizeLink {
 }
 
 type ProductSlider {
+    uid: ID!
     title: String!
     identity: String!
     options: ProductSliderOptions!
@@ -62,7 +69,7 @@ type ImageFormats {
     avif: [ImageSizeLink]
     webp: [ImageSizeLink]
     jpg: [ImageSizeLink]
-    default: ImageSizeLink!
+    default: String
 }
 
 type ProductSliderOptions {
@@ -90,9 +97,10 @@ type Breakpoints {
 type Query {
     slider(
         identity: String!,
-    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider")
+    ): Slider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\Slider") @cache(cacheIdentity: "Mygento\\Slider\\Model\\Resolver\\Cache\\SliderCacheIdentity")
 
     productSlider(
         identity: String!,
-    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider") @cache(cacheIdentity: "Mygento\\Slider\\Model\\Resolver\\Cache\\ProductSliderCacheIdentity")
+
 }

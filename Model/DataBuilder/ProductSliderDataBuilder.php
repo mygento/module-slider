@@ -97,7 +97,8 @@ class ProductSliderDataBuilder
 
         try {
             $result = $this->buildImageFormats($options, $img ?? null, $width, $height);
-            $result['default'] = $this->imageBuilder->resizeOne($img, $width, $height);
+            $defaultImage = $this->imageBuilder->resizeOne($img, $width, $height);
+            $result['default'] = $defaultImage['link'] ?? null;
 
             return $result;
         } catch (LocalizedException) {

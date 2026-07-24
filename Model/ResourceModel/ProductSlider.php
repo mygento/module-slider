@@ -17,6 +17,7 @@ use Mygento\Slider\Api\Data\ProductSliderInterface;
 
 class ProductSlider extends AbstractDb
 {
+    public const CACHE_TAG = 'mygento_product_slider';
     public const TABLE_NAME = 'mygento_product_slider';
     public const TABLE_PRIMARY_KEY = 'id';
 

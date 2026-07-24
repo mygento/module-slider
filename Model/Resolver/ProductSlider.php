@@ -14,6 +14,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
+use Magento\Framework\GraphQl\Query\Uid;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Api\ProductSliderRepositoryInterface;
@@ -24,6 +25,7 @@ class ProductSlider implements ResolverInterface
     public function __construct(
         private ProductSliderRepositoryInterface $productSliderRepository,
         private ProductSliderDataBuilder $productSliderDataBuilder,
+        private Uid $idEncoder,
     ) {}
 
     /**
@@ -55,6 +57,7 @@ class ProductSlider implements ResolverInterface
         $options = $options['options'];
 
         return [
+            'uid' => $this->idEncoder->encode((string) $slider->getId()),
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
             'options' => $options,
