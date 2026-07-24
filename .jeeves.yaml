@@ -80,8 +80,16 @@ Mygento:
             type: date
           to_date:
             type: date
-          link:
+          entity_type:
             type: varchar
+            length: 50
+            nullable: true
+            comment: 'Link Entity Type'
+            source: 'Mygento\Slider\Model\Source\EntityType'
+          entity_identifier:
+            type: varchar
+            nullable: true
+            comment: 'Link Entity Identifier'
           image:
             type: varchar
             nullable: false

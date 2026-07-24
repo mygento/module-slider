@@ -11,6 +11,7 @@ namespace Mygento\Slider\Model\Banner;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Ui\DataProvider\Modifier\PoolInterface;
 use Magento\Ui\DataProvider\ModifierPoolDataProvider;
+use Mygento\Slider\Model\EntityLabelResolver;
 use Mygento\Slider\Model\FileInfo;
 use Mygento\Slider\Model\ResourceModel\Banner\Collection;
 use Mygento\Slider\Model\ResourceModel\Banner\CollectionFactory;
@@ -23,8 +24,12 @@ class DataProvider extends ModifierPoolDataProvider
     private DataPersistorInterface $dataPersistor;
     private array $loadedData = [];
 
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
         private FileInfo $fileInfo,
+        private EntityLabelResolver $labelResolver,
         CollectionFactory $collectionFactory,
         DataPersistorInterface $dataPersistor,
         string $name,
@@ -67,6 +72,10 @@ class DataProvider extends ModifierPoolDataProvider
     {
         $data['image'] = $this->getImageData($data, 'image');
         $data['small_image'] = $this->getImageData($data, 'small_image');
+        $data['entity_label'] = $this->labelResolver->resolve(
+            (string) ($data['entity_type'] ?? ''),
+            $data['entity_identifier'] ?? null,
+        );
 
         return $data;
     }

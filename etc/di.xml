@@ -262,6 +262,7 @@
                 <item name="slider_productslider_listing_data_source" xsi:type="string">Mygento\Slider\Model\ResourceModel\ProductSlider\Grid\Collection</item>
                 <item name="slider_slider_listing_data_source" xsi:type="string">Mygento\Slider\Model\ResourceModel\Slider\Grid\Collection</item>
                 <item name="slider_banner_listing_data_source" xsi:type="string">Mygento\Slider\Model\ResourceModel\Banner\Grid\Collection</item>
+                <item name="slider_page_select_grid_data_source" xsi:type="string">Magento\Cms\Model\ResourceModel\Page\Grid\Collection</item>
             </argument>
         </arguments>
     </type>
@@ -287,6 +288,52 @@
             <argument name="eventPrefix" xsi:type="string">slider_banner_grid_collection</argument>
             <argument name="eventObject" xsi:type="string">banner_grid_collection</argument>
             <argument name="resourceModel" xsi:type="string">Mygento\Slider\Model\ResourceModel\Banner</argument>
+        </arguments>
+    </type>
+
+    <!-- banner link -->
+    <virtualType name="Mygento\Slider\Model\Builder\Category" type="Mygento\Slider\Model\Builder\LinkBuilder">
+        <arguments>
+            <argument name="urlRewriteEntityType" xsi:type="string">category</argument>
+            <argument name="targetPathPattern" xsi:type="string">catalog/category/view/id/%d</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Mygento\Slider\Model\Builder\Product" type="Mygento\Slider\Model\Builder\LinkBuilder">
+        <arguments>
+            <argument name="urlRewriteEntityType" xsi:type="string">product</argument>
+            <argument name="targetPathPattern" xsi:type="string">catalog/product/view/id/%d</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Mygento\Slider\Model\Builder\CmsPage" type="Mygento\Slider\Model\Builder\LinkBuilder">
+        <arguments>
+            <argument name="urlRewriteEntityType" xsi:type="string">cms-page</argument>
+            <argument name="targetPathPattern" xsi:type="string">cms/page/view/page_id/%d</argument>
+        </arguments>
+    </virtualType>
+    <type name="Mygento\Slider\Model\Builder\LinkResolver">
+        <arguments>
+            <argument name="dataBuilders" xsi:type="array">
+                <item name="catalog_category" xsi:type="array">
+                    <item name="entity_type" xsi:type="string">catalog_category</item>
+                    <item name="class" xsi:type="object">Mygento\Slider\Model\Builder\Category</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+                <item name="catalog_product" xsi:type="array">
+                    <item name="entity_type" xsi:type="string">catalog_product</item>
+                    <item name="class" xsi:type="object">Mygento\Slider\Model\Builder\Product</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
+                </item>
+                <item name="cms_page" xsi:type="array">
+                    <item name="entity_type" xsi:type="string">cms_page</item>
+                    <item name="class" xsi:type="object">Mygento\Slider\Model\Builder\CmsPage</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+                <item name="custom" xsi:type="array">
+                    <item name="entity_type" xsi:type="string">custom</item>
+                    <item name="class" xsi:type="object">Mygento\Slider\Model\Builder\CustomLink</item>
+                    <item name="sortOrder" xsi:type="number">40</item>
+                </item>
+            </argument>
         </arguments>
     </type>
 </config>

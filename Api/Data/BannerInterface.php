@@ -18,8 +18,9 @@ interface BannerInterface
     public const NAME = 'name';
     public const FROM_DATE = 'from_date';
     public const TO_DATE = 'to_date';
-    public const LINK = 'link';
     public const CONTENT = 'content';
+    public const ENTITY_TYPE = 'entity_type';
+    public const ENTITY_IDENTIFIER = 'entity_identifier';
     public const IMAGE = 'image';
     public const SMALL_IMAGE = 'small_image';
     public const STORE_ID = 'store_id';
@@ -86,16 +87,28 @@ interface BannerInterface
     public function setToDate(?string $toDate): self;
 
     /**
-     * Get link
+     * Get entity type
      * @return string|null
      */
-    public function getLink(): ?string;
+    public function getEntityType(): ?string;
 
     /**
-     * Set link
+     * Set entity type
      * @return $this
      */
-    public function setLink(?string $link): self;
+    public function setEntityType(?string $entityType): self;
+
+    /**
+     * Get entity identifier
+     * @return string|null
+     */
+    public function getEntityIdentifier(): ?string;
+
+    /**
+     * Set entity identifier
+     * @return $this
+     */
+    public function setEntityIdentifier(?string $entityIdentifier): self;
 
     /**
      * Get content

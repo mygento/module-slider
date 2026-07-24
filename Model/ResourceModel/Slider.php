@@ -72,6 +72,20 @@ class Slider extends AbstractDb
         return $this;
     }
 
+    public function loadByIdentity(AbstractModel $object, string $identity): AbstractModel
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getMainTable())
+            ->where('identity = :identity');
+
+        $data = $connection->fetchRow($select, [':identity' => $identity]);
+
+        $object->setData($data);
+
+        return $object;
+    }
+
     /**
      * Initialize resource model
      */
