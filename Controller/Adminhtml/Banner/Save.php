@@ -15,11 +15,11 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\DateTime;
+use Mygento\ImageCommon\Model\Uploader;
 use Mygento\Slider\Api\BannerRepositoryInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\BannerInterfaceFactory;
 use Mygento\Slider\Controller\Adminhtml\Banner;
-use Mygento\Slider\Model\Uploader;
 
 class Save extends Banner
 {

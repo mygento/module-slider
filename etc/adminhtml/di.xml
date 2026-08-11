@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Mygento\Slider\Model\Uploader">
+    <virtualType name="Mygento\Slider\Model\Uploader" type="Mygento\ImageCommon\Model\Uploader">
         <arguments>
             <argument name="baseTmpPath" xsi:type="string">mygentoslider/tmp/banner</argument>
             <argument name="basePath" xsi:type="string">mygentoslider/banner</argument>
@@ -14,6 +14,16 @@
                 <item name="jpeg" xsi:type="string">image/jpeg</item>
                 <item name="png" xsi:type="string">image/png</item>
             </argument>
+        </arguments>
+    </virtualType>
+    <type name="Mygento\Slider\Controller\Adminhtml\Banner\Save">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Mygento\Slider\Model\Uploader</argument>
+        </arguments>
+    </type>
+    <type name="Mygento\Slider\Controller\Adminhtml\Banner\Upload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Mygento\Slider\Model\Uploader</argument>
         </arguments>
     </type>
     <type name="Mygento\Slider\Model\Source\EntityType">
