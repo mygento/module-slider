@@ -12,10 +12,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
+use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
 use Mygento\Slider\Model\Builder\LinkResolver;
-use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Mygento\Slider\Model\ResourceModel\Slider;
 
@@ -44,17 +44,6 @@ class BannerSlider extends Template implements BlockInterface
         $cacheKeyInfo[] = $this->getSliderIdentifier();
 
         return $cacheKeyInfo;
-    }
-
-    public function createSrcSet(array $items): string
-    {
-        $images = array_reduce(
-            array_keys($items),
-            fn($carry, $key) => [...$carry, $items[$key] . ' ' . $key],
-            [],
-        );
-
-        return implode(', ', $images);
     }
 
     public function getTitle(): string
@@ -96,9 +85,23 @@ class BannerSlider extends Template implements BlockInterface
         $result = [];
         foreach ($collection as $entity) {
             $item = $entity->getData();
-            $item['formats'] = $this->buildImageFormats($options, $item['image'] ?? null, $item['small_image'] ?? null);
-            $item['default'] = $this->service->resizeAndConvert($item['image'] ?? null, $jpg ? 'jpg' : null, $width, $height);
-            $result[] = $item;
+            if ($item['image'] === null) {
+                continue;
+            }
+
+            try {
+                $item['formats'] = $this->buildImageFormats($options, $item['image'], $item['small_image'] ?? null);
+                $defaultImg = $this->service->execute(
+                    imagePath: $item['image'],
+                    width: $width,
+                    height: $height,
+                    ext: $jpg ? 'jpg' : null,
+                );
+                $item['default'] = $defaultImg['url'];
+                $result[] = $item;
+            } catch (LocalizedException) {
+                continue;
+            }
         }
 
         return $this->linkResolver->addLinks(
@@ -138,30 +141,32 @@ class BannerSlider extends Template implements BlockInterface
 
         foreach ($item['formats'] as $im) {
             $hasSmall = isset($im['small_image']) && !empty($im['small_image']);
-            $mq = $hasSmall ? '(min-width: ' . $breakpoint . 'px)' : '';
-            $mqS = $hasSmall ? '(max-width: ' . ($breakpoint - 1) . 'px)' : '';
+            $attr = [
+                'rel' => 'preload',
+                'as' => 'image',
+                'imagesrcset' => $im['image']['srcset'],
+            ];
+            if ($hasSmall) {
+                $attr['media'] = '(min-width: ' . $breakpoint . 'px)';
+            }
             $this->pageConfig->addRemotePageAsset(
                 $item['default'],
                 'link_rel',
                 [
-                    'attributes' => [
-                        'rel' => 'preload',
-                        'as' => 'image',
-                        'media' => $mq,
-                        'imagesrcset' => $this->createSrcSet($im['image']),
-                    ],
+                    'attributes' => $attr,
                 ],
             );
+            if (!$hasSmall) {
+                break;
+            }
+            $attr['media'] = '(max-width: ' . ($breakpoint - 1) . 'px)';
+            $attr['imagesrcset'] = $im['small_image']['srcset'];
+
             $this->pageConfig->addRemotePageAsset(
                 $item['default'],
                 'link_rel',
                 [
-                    'attributes' => [
-                        'rel' => 'preload',
-                        'as' => 'image',
-                        'media' => $mqS,
-                        'imagesrcset' => $this->createSrcSet($im['small_image']),
-                    ],
+                    'attributes' => $attr,
                 ],
             );
             break;
@@ -195,11 +200,8 @@ class BannerSlider extends Template implements BlockInterface
         return $entity;
     }
 
-    private function buildImageFormats(array $options, ?string $image = null, ?string $smallImage = null): array
+    private function buildImageFormats(array $options, string $image, ?string $smallImage = null): array
     {
-        if (null === $image) {
-            return [];
-        }
         $width = $this->getIntegerOption($options, 'width');
         $height = $this->getIntegerOption($options, 'height');
         $widthS = $this->getIntegerOption($options, 'width_small');
@@ -210,35 +212,22 @@ class BannerSlider extends Template implements BlockInterface
             if (!isset($options[$ext]) || $options[$ext] !== true) {
                 continue;
             }
+            $result[$ext]['image'] = $this->service->execute(
+                imagePath: $image,
+                width: $width,
+                height: $height,
+                ext: $ext,
+            );
 
-            $result[$ext]['image'] = $this->resizeImage($ext, $image, $width, $height);
-            if ($smallImage === null) {
+            if ($smallImage === null || $widthS === null) {
                 continue;
             }
-            $result[$ext]['small_image'] = $this->resizeImage($ext, $smallImage, $widthS, $heightS);
-        }
-
-        return $result;
-    }
-
-    private function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
-    {
-        $result = [];
-        for ($i = 1;$i <= 3;$i++) {
-            try {
-                $file = $this->service->resizeAndConvert(
-                    $image,
-                    $ext,
-                    $width !== null ? $width * $i : null,
-                    $height !== null ? $height * $i : null,
-                );
-                if ($file === null) {
-                    continue;
-                }
-                $result[($width * $i) . 'w'] = $file;
-            } catch (LocalizedException) {
-                continue;
-            }
+            $result[$ext]['small_image'] = $this->service->execute(
+                imagePath: $smallImage,
+                width: $widthS,
+                height: $heightS,
+                ext: $ext,
+            );
         }
 
         return $result;

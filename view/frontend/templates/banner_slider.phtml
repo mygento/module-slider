@@ -26,13 +26,13 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
     <picture>
 <?php foreach ($img['formats'] as $type => $item): ?>
 <?php
-    $hasSmall = isset($item['small_image']) && !empty($item['small_image']);
+    $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
     $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
     ?>
-        <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $block->createSrcSet($item['image']) ?>" type="image/<?= $type ?>" />
+        <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $item['image']['srcset'] ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
-        <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $block->createSrcSet($item['small_image']) ?>" type="image/<?= $type ?>" />
+        <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $item['small_image']['srcset'] ?>" type="image/<?= $type ?>" />
 <?php endif; ?>
 <?php endforeach; ?>
         <img alt="<?= $img['name']?>" src="<?= $img['default'] ?>" fetchpriority="<?= $lazy ? 'low' : 'high' ?>"<?= $lazy ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
@@ -56,13 +56,13 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
                 <picture>
 <?php foreach ($img['formats'] as $type => $item): ?>
 <?php
-    $hasSmall = isset($item['small_image']) && !empty($item['small_image']);
+    $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
     $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
     ?>
-                    <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $block->createSrcSet($item['image']) ?>" type="image/<?= $type ?>" />
+                    <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $item['image']['srcset'] ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
-                    <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $block->createSrcSet($item['small_image']) ?>" type="image/<?= $type ?>" />
+                    <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $item['small_image']['srcset'] ?>" type="image/<?= $type ?>" />
 <?php endif; ?>
 <?php endforeach; ?>
                     <img alt="<?= $img['name']?>" src="<?= $img['default'] ?>" fetchpriority="<?= ($lazy || $index !== 0) ? 'low' : 'high' ?>"<?= ($lazy || $index !== 0) ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />

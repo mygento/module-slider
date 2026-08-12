@@ -28,9 +28,9 @@ use Magento\Framework\View\LayoutFactory;
 use Magento\Rule\Model\Condition\Combine;
 use Magento\Rule\Model\Condition\Sql\Builder;
 use Magento\Widget\Helper\Conditions;
+use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Model\Catalog\Sorting;
-use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel;
 
 /**
@@ -105,17 +105,6 @@ class ProductSlider extends ProductsList
         ];
     }
 
-    public function createSrcSet(array $items): string
-    {
-        $images = array_reduce(
-            array_keys($items),
-            fn($carry, $key) => [...$carry, $items[$key] . ' ' . $key],
-            [],
-        );
-
-        return implode(', ', $images);
-    }
-
     public function getOptions(): array
     {
         return $this->getSlider()?->getOptions() ?? [];
@@ -168,9 +157,23 @@ class ProductSlider extends ProductsList
         $height = $sizes['height'] ?? null;
 
         try {
+            if ($img === null || $width === null) {
+                // TODO: placeholder
+                return [
+                    'formats' => [],
+                    'default' => '',
+                ];
+            }
+            $defaultImg = $this->service->execute(
+                imagePath: $img,
+                width: $width,
+                height: $height,
+                ext: $jpg ? 'jpg' : null,
+            );
+
             return [
-                'formats' => $this->buildImageFormats($options, $img ?? null, $width, $height),
-                'default' => $this->service->resizeAndConvert($img ?? null, $jpg ? 'jpg' : null, $width, $height),
+                'formats' => $this->buildImageFormats($options['options'], $img, $width, $height),
+                'default' => $defaultImg['url'],
             ];
         } catch (LocalizedException) {
             return [
@@ -235,46 +238,20 @@ class ProductSlider extends ProductsList
         return $this->rule->getConditions();
     }
 
-    private function resizeImage(?string $ext = null, ?string $image = null, ?int $width = null, ?int $height = null): array
-    {
-        if ($image === null) {
-            return [];
-        }
-        $result = [];
-        for ($i = 1;$i <= 3;$i++) {
-            try {
-                $file = $this->service->resizeAndConvert(
-                    $image,
-                    $ext,
-                    $width !== null ? $width * $i : null,
-                    $height !== null ? $height * $i : null,
-                );
-                if ($file === null) {
-                    continue;
-                }
-                $result[($width * $i) . 'w'] = $file;
-            } catch (LocalizedException) {
-                continue;
-            }
-        }
-
-        return $result;
-    }
-
     private function buildImageFormats(array $options, ?string $image = null, ?int $width = null, ?int $height = null): array
     {
-        if (null === $image) {
-            return [];
-        }
-
         $result = [];
 
         foreach (['avif', 'webp', 'jpg'] as $ext) {
             if (!isset($options[$ext]) || $options[$ext] !== true) {
                 continue;
             }
-
-            $result[$ext]['image'] = $this->resizeImage($ext, $image, $width, $height);
+            $result[$ext]['image'] = $this->service->execute(
+                imagePath: $image,
+                width: $width,
+                height: $height,
+                ext: $ext,
+            );
         }
 
         return $result;

@@ -1,8 +1,20 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <virtualType name="Mygento\Slider\Model\ProductResizer" type="Mygento\Slider\Model\Resizer">
+    <virtualType name="Mygento\Slider\Model\BannerResizer" type="Mygento\ImageCommon\Model\Resizer">
         <arguments>
-            <argument name="basePath" xsi:type="string">catalog/product</argument>
+            <argument name="srcPath" xsi:type="string">mygentoslider/banner</argument>
+            <argument name="outputPath" xsi:type="string">mygentoslider/banner/cache</argument>
+        </arguments>
+    </virtualType>
+    <type name="Mygento\Slider\Block\BannerSlider">
+        <arguments>
+            <argument name="service" xsi:type="object">Mygento\Slider\Model\BannerResizer</argument>
+        </arguments>
+    </type>
+    <virtualType name="Mygento\Slider\Model\ProductResizer" type="Mygento\ImageCommon\Model\Resizer">
+        <arguments>
+            <argument name="srcPath" xsi:type="string">catalog/product</argument>
+            <argument name="outputPath" xsi:type="string">catalog/product/cache/slider</argument>
         </arguments>
     </virtualType>
     <type name="Mygento\Slider\Block\ProductSlider">

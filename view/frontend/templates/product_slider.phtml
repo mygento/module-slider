@@ -50,7 +50,7 @@ $i = 0;
 <?php $img = $block->getImageData($product) ?>
                         <picture>
 <?php foreach ($img['formats'] as $type => $item): ?>
-                            <source<?= $widthTag ?><?= $heightTag ?> srcset="<?= $block->createSrcSet($item['image']) ?>" type="image/<?= $type ?>" />
+                            <source<?= $widthTag ?><?= $heightTag ?> srcset="<?= $item['image']['srcset'] ?>" type="image/<?= $type ?>" />
 <?php endforeach; ?>
                             <img alt="<?= $escaper->escapeHtml($product->getName()) ?>" src="<?= $img['default'] ?>" fetchpriority="<?= ($lazy || $i >= $perPage) ? 'low' : 'auto' ?>"<?= ($lazy || $i >= $perPage) ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
                         </picture>
