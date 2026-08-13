@@ -52,13 +52,12 @@ class ProductSlider implements ResolverInterface
         }
 
         $options = $slider->getOptions();
-        $options = $options['options'];
 
         return [
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
-            'options' => $options,
-            'parameters' => $slider->getParameters(),
+            'options' => $options['options'],
+            'parameters' => $options['parameters'],
             'items' => $this->productSliderDataBuilder->getProductModels($slider),
         ];
     }

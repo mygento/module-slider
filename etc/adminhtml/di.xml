@@ -21,6 +21,16 @@
             <argument name="imageUploader" xsi:type="object">Mygento\Slider\Model\Uploader</argument>
         </arguments>
     </type>
+    <type name="Mygento\Slider\Model\Slider\DataProvider">
+        <arguments>
+            <argument name="service" xsi:type="object">Mygento\Slider\Model\BannerResizer</argument>
+        </arguments>
+    </type>
+    <type name="Mygento\Slider\Ui\Component\Listing\Columns\Image">
+        <arguments>
+            <argument name="service" xsi:type="object">Mygento\Slider\Model\BannerResizer</argument>
+        </arguments>
+    </type>
     <type name="Mygento\Slider\Controller\Adminhtml\Banner\Upload">
         <arguments>
             <argument name="imageUploader" xsi:type="object">Mygento\Slider\Model\Uploader</argument>

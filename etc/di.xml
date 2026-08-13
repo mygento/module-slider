@@ -130,6 +130,13 @@
             </argument>
         </arguments>
     </type>
+    <!-- image common -->
+    <virtualType name="Mygento\Slider\Model\BannerResizer" type="Mygento\ImageCommon\Model\Resizer">
+        <arguments>
+            <argument name="srcPath" xsi:type="string">mygentoslider/banner</argument>
+            <argument name="outputPath" xsi:type="string">mygentoslider/banner/cache</argument>
+        </arguments>
+    </virtualType>
 
     <!-- generated -->
     <preference for="Mygento\Slider\Api\ProductSliderRepositoryInterface" type="Mygento\Slider\Model\ProductSliderRepository"/>

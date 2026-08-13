@@ -23,7 +23,6 @@ type SliderOptions {
 
 type Banner {
     uid: ID!
-    image: String!
     link: String!
     name: String!
     image_formats: SliderImageFormats! @doc(description: "List image formats")
