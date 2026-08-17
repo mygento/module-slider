@@ -68,10 +68,14 @@ class Save extends Banner
         $this->normalizeData($entity, $data);
 
         if (!empty($data['entity_type']) && empty($data['entity_identifier'])) {
+            if ($data['id'] === '') {
+                unset($data['id']);
+            }
+
+            $this->dataPersistor->set('slider_banner', $data);
             $this->messageManager->addErrorMessage(
                 __('The Entity Identifier is required. Please assign an entity.')->render(),
             );
-            $this->dataPersistor->set('slider_banner', $data);
 
             return $resultRedirect->setPath('*/*/edit', ['id' => $entity->getId()]);
         }
@@ -119,7 +123,10 @@ class Save extends Banner
             return $imageName;
         }
 
-        return $this->imageUploader->moveFileFromTmp($imageName);
+        return substr(
+            $this->imageUploader->moveFileFromTmp($imageName),
+            strlen($this->imageUploader->getBasePath()) + 1,
+        );
     }
 
     private function normalizeData(BannerInterface $entity, array $data): void

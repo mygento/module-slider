@@ -24,7 +24,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
 <a href="<?= $escaper->escapeUrl($img['link']) ?>">
 <?php endif; ?>
     <picture>
-<?php foreach ($img['formats'] as $type => $item): ?>
+<?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
@@ -54,7 +54,7 @@ $heightSTag = $heightS !== null ? ' height="' . $heightS . '"' : '';
                 <a href="<?= $escaper->escapeUrl($img['link']) ?>">
 <?php endif; ?>
                 <picture>
-<?php foreach ($img['formats'] as $type => $item): ?>
+<?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
