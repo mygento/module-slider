@@ -18,7 +18,7 @@
     "magento/module-backend": "102.*",
     "mygento/module-base": "~2.4.0",
     "magento/module-catalog-widget": "100.4.*",
-    "mygento/module-image-common": "v2.4.x-dev"
+    "mygento/module-image-common": "~2.4.0"
   },
   "require-dev": {
     "mygento/coding-standard": "~2.14.8"

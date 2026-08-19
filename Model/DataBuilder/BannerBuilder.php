@@ -37,6 +37,8 @@ class BannerBuilder
         $jpg = isset($options['jpg']) && $options['jpg'] === true;
         $width = $this->getIntegerOption($options, 'width');
         $height = $this->getIntegerOption($options, 'height');
+        $widthS = $this->getIntegerOption($options, 'width_small');
+        $heightS = $this->getIntegerOption($options, 'height_small');
 
         $currentDate = $this->date->gmtDate();
 
@@ -73,8 +75,15 @@ class BannerBuilder
                     height: $height,
                     ext: $jpg ? 'jpg' : null,
                 );
+                $defaultSmallImg = $item['small_image'] ? $this->service->execute(
+                    imagePath: $item['small_image'],
+                    width: $widthS,
+                    height: $heightS,
+                    ext: $jpg ? 'jpg' : null,
+                ) : null;
                 $item['default'] = $defaultImg['url'];
                 $item['image'] = $item['default'];
+                $item['small_image'] = $defaultSmallImg['url'] ?? null;
                 $result[] = $item;
             } catch (LocalizedException) {
                 continue;

@@ -53,14 +53,15 @@ class ProductSliderBuilder
 
     public function getSizes(Product $product): array
     {
-        /** @var Image $image */
         if ($this->appState->getAreaCode() !== Area::AREA_FRONTEND) {
+            /** @var Image $image */
             $image = $this->appState->emulateAreaCode(
                 Area::AREA_FRONTEND,
                 [$this->imageFactory, 'create'],
                 [$product, 'category_page_grid'],
             );
         } else {
+            /** @var Image $image */
             $image = $this->imageFactory->create($product, 'category_page_grid');
         }
         $width = $image->getWidth();
