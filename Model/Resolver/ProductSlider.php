@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\Resolver;
 
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
@@ -17,13 +18,13 @@ use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Api\ProductSliderRepositoryInterface;
-use Mygento\Slider\Model\DataBuilder\ProductSliderDataBuilder;
+use Mygento\Slider\Model\DataBuilder\ProductSliderBuilder;
 
 class ProductSlider implements ResolverInterface
 {
     public function __construct(
-        private ProductSliderRepositoryInterface $productSliderRepository,
-        private ProductSliderDataBuilder $productSliderDataBuilder,
+        private ProductSliderRepositoryInterface $repo,
+        private ProductSliderBuilder $builder,
     ) {}
 
     /**
@@ -43,7 +44,7 @@ class ProductSlider implements ResolverInterface
 
         try {
             /** @var ProductSliderInterface $slider */
-            $slider = $this->productSliderRepository->getByIdentity($identity);
+            $slider = $this->repo->getByIdentity($identity);
         } catch (LocalizedException) {
             throw new GraphQlNoSuchEntityException(__('Product Slider "%1" not found or disabled', $identity));
         }
@@ -52,14 +53,29 @@ class ProductSlider implements ResolverInterface
         }
 
         $options = $slider->getOptions();
-        $options = $options['options'];
 
         return [
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
-            'options' => $options,
-            'parameters' => $slider->getParameters(),
-            'items' => $this->productSliderDataBuilder->getProductModels($slider),
+            'options' => $options['options'],
+            'parameters' => $options['parameters'],
+            'items' => $this->getProductModels($slider),
         ];
+    }
+
+    private function getProductModels(ProductSliderInterface $slider): array
+    {
+        $productsCollection = $this->builder->getCollection($slider);
+        $result = [];
+        /** @var ProductInterface $product */
+        foreach ($productsCollection as $product) {
+            $imageFormats = $this->builder->getImageData($slider, $product);
+            $imageFormats['product'] = ['model' => $product];
+            $imageFormats['sku'] = $product->getSku();
+
+            $result[] = $imageFormats;
+        }
+
+        return $result;
     }
 }

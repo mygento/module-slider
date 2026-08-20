@@ -49,8 +49,8 @@ $i = 0;
                     <a href="<?= $escaper->escapeUrl($block->getProductUrl($product)) ?>" class="product-item-photo">
 <?php $img = $block->getImageData($product) ?>
                         <picture>
-<?php foreach ($img['formats'] as $type => $item): ?>
-                            <source<?= $widthTag ?><?= $heightTag ?> srcset="<?= $block->createSrcSet($item['image']) ?>" type="image/<?= $type ?>" />
+<?php foreach ($img['image_formats'] as $type => $item): ?>
+                            <source<?= $widthTag ?><?= $heightTag ?> srcset="<?= $item['srcset'] ?>" type="image/<?= $type ?>" />
 <?php endforeach; ?>
                             <img alt="<?= $escaper->escapeHtml($product->getName()) ?>" src="<?= $img['default'] ?>" fetchpriority="<?= ($lazy || $i >= $perPage) ? 'low' : 'auto' ?>"<?= ($lazy || $i >= $perPage) ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
                         </picture>

@@ -10,12 +10,13 @@ namespace Mygento\Slider\Ui\Component\Listing\Columns;
 
 use Magento\Catalog\Helper;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Listing\Columns\Column;
-use Mygento\Slider\Model\Resizer;
+use Mygento\ImageCommon\Model\Resizer;
 
 class Image extends Column
 {
@@ -47,7 +48,12 @@ class Image extends Column
 
             try {
                 $item[$fieldName . '_orig_src'] = $this->getUrl($item[$fieldName]);
-                $item[$fieldName . '_src'] = $this->service->resizeAndConvert($item[$fieldName], null, 48, 48);
+                $img = $this->service->execute(
+                    imagePath: $item[$fieldName],
+                    width: 48,
+                    height: 48,
+                );
+                $item[$fieldName . '_src'] = $img['url'];
             } catch (LocalizedException) {
                 $item[$fieldName . '_src'] = $this->getUrl($item[$fieldName]);
             }
@@ -61,6 +67,6 @@ class Image extends Column
         /** @var Store $store */
         $store = $this->storeManager->getStore();
 
-        return $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . $path;
+        return $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . $this->service->getSourceDirectory() . $path;
     }
 }
