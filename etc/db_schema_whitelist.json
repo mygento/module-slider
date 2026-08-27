@@ -1,16 +1,90 @@
 {
-  "mygento_slider_banner": {
-    "column": {
-      "id": true,
-      "is_active": true,
-      "name": true,
-      "from_date": true,
-      "to_date": true,
-      "link": true,
-      "entity_type": true,
-      "entity_identifier": true,
-      "image": true,
-      "small_image": true
+    "mygento_slider_banner": {
+        "column": {
+            "id": true,
+            "is_active": true,
+            "name": true,
+            "from_date": true,
+            "to_date": true,
+            "link": true,
+            "entity_type": true,
+            "entity_identifier": true,
+            "image": true,
+            "small_image": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "mygento_slider_items": {
+        "column": {
+            "slider_id": true,
+            "banner_id": true,
+            "position": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MYGENTO_SLIDER_ITEMS_BANNER_ID_MYGENTO_SLIDER_BANNER_ID": true,
+            "MYGENTO_SLIDER_ITEMS_SLIDER_ID_MYGENTO_SLIDER_ID": true
+        }
+    },
+    "mygento_product_slider": {
+        "column": {
+            "id": true,
+            "identity": true,
+            "title": true,
+            "is_active": true,
+            "conditions": true,
+            "options": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MYGENTO_PRODUCT_SLIDER_IDENTITY": true
+        }
+    },
+    "mygento_product_slider_store": {
+        "column": {
+            "entity_id": true,
+            "store_id": true
+        },
+        "index": {
+            "MYGENTO_PRODUCT_SLIDER_STORE_STORE_ID": true,
+            "MYGENTO_PRODUCT_SLIDER_STORE_ENTITY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MYGENTO_PRODUCT_SLIDER_STORE_STORE_ID_STORE_STORE_ID": true,
+            "MYGENTO_PRODUCT_SLIDER_STORE_ENTITY_ID_MYGENTO_PRODUCT_SLIDER_ID": true
+        }
+    },
+    "mygento_slider": {
+        "column": {
+            "id": true,
+            "active": true,
+            "identity": true,
+            "title": true,
+            "from_date": true,
+            "to_date": true,
+            "options": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MYGENTO_SLIDER_IDENTITY": true
+        }
+    },
+    "mygento_slider_banner_store": {
+        "column": {
+            "entity_id": true,
+            "store_id": true
+        },
+        "index": {
+            "MYGENTO_SLIDER_BANNER_STORE_STORE_ID": true,
+            "MYGENTO_SLIDER_BANNER_STORE_ENTITY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MYGENTO_SLIDER_BANNER_STORE_STORE_ID_STORE_STORE_ID": true,
+            "MYGENTO_SLIDER_BANNER_STORE_ENTITY_ID_MYGENTO_SLIDER_BANNER_ID": true
+        }
     }
-  }
 }
