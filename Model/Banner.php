@@ -130,6 +130,22 @@ class Banner extends AbstractModel implements BannerInterface
     }
 
     /**
+     * Get content
+     */
+    public function getContent(): ?string
+    {
+        return $this->getData(self::CONTENT);
+    }
+
+    /**
+     * Set content
+     */
+    public function setContent(?string $content): self
+    {
+        return $this->setData(self::CONTENT, $content);
+    }
+
+    /**
      * Get image
      */
     public function getImage(): string

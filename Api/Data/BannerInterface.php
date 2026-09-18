@@ -18,6 +18,7 @@ interface BannerInterface
     public const NAME = 'name';
     public const FROM_DATE = 'from_date';
     public const TO_DATE = 'to_date';
+    public const CONTENT = 'content';
     public const ENTITY_TYPE = 'entity_type';
     public const ENTITY_IDENTIFIER = 'entity_identifier';
     public const IMAGE = 'image';
@@ -108,6 +109,18 @@ interface BannerInterface
      * @return $this
      */
     public function setEntityIdentifier(?string $entityIdentifier): self;
+
+    /**
+     * Get content
+     * @return string|null
+     */
+    public function getContent(): ?string;
+
+    /**
+     * Set content
+     * @return $this
+     */
+    public function setContent(?string $content): self;
 
     /**
      * Get image

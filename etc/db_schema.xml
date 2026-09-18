@@ -63,6 +63,7 @@
         <column xsi:type="varchar" name="name" nullable="true" length="255" comment="Name"/>
         <column xsi:type="date" name="from_date" nullable="true" comment="From_date"/>
         <column xsi:type="date" name="to_date" nullable="true" comment="To_date"/>
+        <column xsi:type="text" name="content" nullable="true" comment="Content"/>
         <column xsi:type="varchar" name="entity_type" nullable="true" length="50" comment="Link Entity Type"/>
         <column xsi:type="varchar" name="entity_identifier" nullable="true" length="255" onCreate="migrateDataFrom(link)" comment="Link Entity Identifier"/>
         <column xsi:type="varchar" name="image" nullable="false" length="255" comment="Image"/>
