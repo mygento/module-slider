@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\DataBuilder;
 
-use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Block\Product\Image;
+use Magento\Catalog\Block\Product\ImageFactory;
 use Magento\Catalog\Model\Config;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Visibility;
@@ -18,37 +19,68 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogInventory\Helper\Stock;
 use Magento\CatalogWidget\Model\Rule;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Rule\Model\Condition\Combine;
 use Magento\Rule\Model\Condition\Sql\Builder;
+use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Model\Catalog\Sorting;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class ProductSliderDataBuilder
+class ProductSliderBuilder
 {
-    private ?array $sliderProducts = null;
-
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
+        private Resizer $service,
         private Sorting $sorting,
-        private Json $serializer,
-        private Config $catalogConfig,
-        private Stock $stock,
-        private CollectionFactory $productCollectionFactory,
         private Visibility $catalogProductVisibility,
+        private Config $catalogConfig,
+        private Json $serializer,
         private Builder $sqlBuilder,
+        private Stock $stock,
         private Rule $rule,
-        private ImageBuilder $imageBuilder,
+        private State $appState,
+        private CollectionFactory $productCollectionFactory,
+        private ImageFactory $imageFactory,
     ) {}
+
+    public function getSizes(Product $product): array
+    {
+        if ($this->appState->getAreaCode() !== Area::AREA_FRONTEND) {
+            /** @var Image $image */
+            $image = $this->appState->emulateAreaCode(
+                Area::AREA_FRONTEND,
+                [$this->imageFactory, 'create'],
+                [$product, 'category_page_grid'],
+            );
+        } else {
+            /** @var Image $image */
+            $image = $this->imageFactory->create($product, 'category_page_grid');
+        }
+        $width = $image->getWidth();
+        $height = $image->getHeight();
+
+        return [
+            'width' => $width,
+            'height' => $height,
+        ];
+    }
 
     public function getCollection(ProductSliderInterface $slider): Collection
     {
         $options = $slider->getOptions();
         $maxCount = $options['products_count'] ?? 12;
+
+        /** @var Collection $collection */
         $collection = $this->productCollectionFactory->create();
+
         $collection->setVisibility($this->catalogProductVisibility->getVisibleInCatalogIds());
         $collection
             ->addMinimalPrice()
@@ -69,41 +101,42 @@ class ProductSliderDataBuilder
         return $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);
     }
 
-    public function getProductModels(ProductSliderInterface $slider): array
-    {
-        if (isset($this->sliderProducts[$slider->getId()])) {
-            return $this->sliderProducts[$slider->getId()];
-        }
-        $productsCollection = $this->getCollection($slider);
-        /** @var ProductInterface $product */
-        foreach ($productsCollection as $product) {
-            $imageFormats = $this->getImageData($slider, $product);
-            $this->sliderProducts[$slider->getId()][] = [
-                'product' => ['model' => $product], 'image_formats' => $imageFormats, 'sku' => $product->getSku(),
-            ];
-        }
-
-        return $this->sliderProducts[$slider->getId()];
-    }
-
     public function getImageData(ProductSliderInterface $slider, Product $product): array
     {
         $img = $product->getData('thumbnail');
         $options = $slider->getOptions();
-        $options = $options['options'];
-        $sizes = $this->imageBuilder->getSizes($product);
+        $jpg = isset($options['jpg']) && $options['jpg'] === true;
+        $sizes = $this->getSizes($product);
         $width = $sizes['width'] ?? null;
         $height = $sizes['height'] ?? null;
 
+        if ($img === null || $width === null) {
+            return [
+                'image_formats' => [],
+                'default' => '#',
+                'image' => '#',
+            ];
+        }
+
         try {
-            $result = $this->buildImageFormats($options, $img ?? null, $width, $height);
-            $result['default'] = $this->imageBuilder->resizeOne($img, $width, $height);
+            $defaultImg = $this->service->execute(
+                imagePath: $img,
+                width: $width,
+                height: $height,
+                ext: $jpg ? 'jpg' : null,
+            );
 
-            return $result;
+            return [
+                'image_formats' => $this->buildImageFormats($options['options'], $img, $width, $height),
+                'default' => $defaultImg['url'],
+                'image' => $defaultImg['url'],
+            ];
         } catch (LocalizedException) {
-            $result['default'] = null;
-
-            return $result;
+            return [
+                'image_formats' => [],
+                'default' => '#',
+                'image' => '#',
+            ];
         }
     }
 
@@ -126,17 +159,20 @@ class ProductSliderDataBuilder
 
     private function buildImageFormats(array $options, ?string $image = null, ?int $width = null, ?int $height = null): array
     {
-        if (null === $image) {
-            return [];
+        $result = [];
+
+        foreach (['avif', 'webp', 'jpg'] as $ext) {
+            if (!isset($options[$ext]) || $options[$ext] !== true) {
+                continue;
+            }
+            $result[$ext] = $this->service->execute(
+                imagePath: $image,
+                width: $width,
+                height: $height,
+                ext: $ext,
+            );
         }
 
-        $formats = [];
-        $supportedFormats = $this->imageBuilder->getSupportedFormats($options);
-
-        foreach ($supportedFormats as $ext) {
-            $formats[$ext] = $this->imageBuilder->resizeImage($ext, $image, $width, $height);
-        }
-
-        return $formats;
+        return $result;
     }
 }

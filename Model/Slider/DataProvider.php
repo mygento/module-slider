@@ -14,9 +14,9 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\DataProvider\Modifier\PoolInterface;
 use Magento\Ui\DataProvider\ModifierPoolDataProvider;
+use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
-use Mygento\Slider\Model\Resizer;
 use Mygento\Slider\Model\ResourceModel\Banner;
 use Mygento\Slider\Model\ResourceModel\Slider;
 
@@ -88,19 +88,20 @@ class DataProvider extends ModifierPoolDataProvider
             ];
 
             try {
-                $banner['image'] = $this->service->resizeAndConvert(
-                    $item->getImage(),
-                    null,
-                    48,
-                    48,
+                $img = $this->service->execute(
+                    imagePath: $item->getImage(),
+                    width: 48,
+                    height: 48,
                 );
+                $banner['image'] = $img['url'];
+
                 if ($item->getSmallImage()) {
-                    $banner['small_image'] = $this->service->resizeAndConvert(
-                        $item->getSmallImage(),
-                        null,
-                        48,
-                        48,
+                    $img = $this->service->execute(
+                        imagePath: $item->getSmallImage(),
+                        width: 48,
+                        height: 48,
                     );
+                    $banner['small_image'] = $img['url'];
                 }
             } catch (LocalizedException) {
                 $banner['image'] = $this->getUrl($item->getData(BannerInterface::IMAGE));

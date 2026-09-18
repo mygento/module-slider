@@ -23,9 +23,12 @@ type SliderOptions {
 
 type Banner {
     uid: ID!
+    link: String
     image: String!
-    link: String!
+    small_image: String
     name: String!
+    entity_type: String!
+    entity_identifier: ID
     image_formats: SliderImageFormats! @doc(description: "List image formats")
 }
 
@@ -33,36 +36,43 @@ type SliderImageFormats {
     avif: ImageFormatData
     webp: ImageFormatData
     jpg: ImageFormatData
-    default: ImageFormatData
 }
 
 type ImageFormatData {
-    image: [ImageSizeLink]
-    small_image: [ImageSizeLink]
+    image: ImageData!
+    small_image: ImageData
 }
 
-type ImageSizeLink {
-    size: String
-    link: String
+type ImageData {
+  srcset: String!
+  url: String!
+  list: [ImageVariant!]!
+  lqip: String
+}
+
+type ImageVariant {
+    url: String!
+    width: Int!
 }
 
 type ProductSlider {
     title: String!
     identity: String!
     options: ProductSliderOptions!
-    parameters: Parameters!
+    parameters: ProductSliderParameters!
     items: [SliderProduct]
 }
 
 type SliderProduct @doc(description: "Contains product details") {
     product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
     image_formats: ImageFormats! @doc(description: "List image formats")
+    image: String!
 }
+
 type ImageFormats {
-    avif: [ImageSizeLink]
-    webp: [ImageSizeLink]
-    jpg: [ImageSizeLink]
-    default: ImageSizeLink!
+    avif: ImageData
+    webp: ImageData
+    jpg: ImageData
 }
 
 type ProductSliderOptions {
@@ -76,9 +86,9 @@ type ProductSliderOptions {
     autoplay_interval: Int!
 }
 
-type Parameters {
+type ProductSliderParameters {
     products_count: Int!
-    sort_order: Int!
+    sort_order: String!
     breakpoints: [Breakpoints]
 }
 

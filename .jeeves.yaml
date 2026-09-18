@@ -24,7 +24,7 @@ Mygento:
             type: boolean
             default: 0
           conditions:
-            type: varchar
+            type: text
             nullable: false
           options:
             type: json

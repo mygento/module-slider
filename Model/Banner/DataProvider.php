@@ -82,25 +82,33 @@ class DataProvider extends ModifierPoolDataProvider
 
     private function getImageData(array $data, string $key): ?array
     {
-        $imageFileName = $data[$key];
+        $imageFileName = $data[$key] ?? null;
         if (!$imageFileName) {
             return null;
         }
-        $result = null;
-
-        if ($this->fileInfo->isExist($imageFileName)) {
-            $stat = $this->fileInfo->getStat($imageFileName);
-            $mime = $this->fileInfo->getMimeType($imageFileName);
-            $result = [
-                [
-                    'name' => $imageFileName,
-                    'url' => $this->fileInfo->getUrl($imageFileName),
-                    'size' => $stat['size'],
-                    'type' => $mime,
-                ],
-            ];
+        if (is_array($imageFileName) && isset($imageFileName[0]['name']) && $imageFileName[0]['name']) {
+            $imageFileName = $imageFileName[0]['name'];
+        }
+        if (is_array($imageFileName)) {
+            return null;
         }
 
-        return $result;
+        $imageFilePath = 'mygentoslider/banner/' . $imageFileName;
+        $result = null;
+        if (!$this->fileInfo->isExist($imageFilePath)) {
+            return $result;
+        }
+
+        $stat = $this->fileInfo->getStat($imageFilePath);
+        $mime = $this->fileInfo->getMimeType($imageFilePath);
+
+        return [
+            [
+                'name' => $imageFileName,
+                'url' => $this->fileInfo->getUrl($imageFilePath),
+                'size' => $stat['size'],
+                'type' => $mime,
+            ],
+        ];
     }
 }

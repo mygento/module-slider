@@ -17,7 +17,7 @@
         <column xsi:type="varchar" name="identity" nullable="false" length="255" comment="Identity"/>
         <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title"/>
         <column xsi:type="boolean" name="is_active" nullable="false" default="0" comment="Is_active"/>
-        <column xsi:type="varchar" name="conditions" nullable="false" length="255" comment="Conditions"/>
+        <column xsi:type="text" name="conditions" nullable="false" comment="Conditions"/>
         <column xsi:type="json" name="options" nullable="true" comment="Options"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="id"/>

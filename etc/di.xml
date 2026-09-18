@@ -131,6 +131,30 @@
         </arguments>
     </type>
 
+    <!-- image common -->
+    <virtualType name="Mygento\Slider\Model\BannerResizer" type="Mygento\ImageCommon\Model\Resizer">
+        <arguments>
+            <argument name="srcPath" xsi:type="string">mygentoslider/banner</argument>
+            <argument name="outputPath" xsi:type="string">mygentoslider/banner/cache</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Mygento\Slider\Model\ProductResizer" type="Mygento\ImageCommon\Model\Resizer">
+        <arguments>
+            <argument name="srcPath" xsi:type="string">catalog/product</argument>
+            <argument name="outputPath" xsi:type="string">catalog/product/cache/slider</argument>
+        </arguments>
+    </virtualType>
+    <type name="Mygento\Slider\Model\DataBuilder\BannerBuilder">
+        <arguments>
+            <argument name="service" xsi:type="object">Mygento\Slider\Model\BannerResizer</argument>
+        </arguments>
+    </type>
+    <type name="Mygento\Slider\Model\DataBuilder\ProductSliderBuilder">
+        <arguments>
+            <argument name="service" xsi:type="object">Mygento\Slider\Model\ProductResizer</argument>
+        </arguments>
+    </type>
+
     <!-- generated -->
     <preference for="Mygento\Slider\Api\ProductSliderRepositoryInterface" type="Mygento\Slider\Model\ProductSliderRepository"/>
     <preference for="Mygento\Slider\Api\SliderRepositoryInterface" type="Mygento\Slider\Model\SliderRepository"/>

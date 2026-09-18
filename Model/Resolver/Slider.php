@@ -15,13 +15,13 @@ use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mygento\Slider\Api\SliderRepositoryInterface;
-use Mygento\Slider\Model\DataBuilder\BannerDataBuilder;
+use Mygento\Slider\Model\DataBuilder\BannerBuilder;
 
 class Slider implements ResolverInterface
 {
     public function __construct(
-        private SliderRepositoryInterface $sliderRepository,
-        private BannerDataBuilder $bannerDataBuilder,
+        private SliderRepositoryInterface $repo,
+        private BannerBuilder $builder,
     ) {}
 
     /**
@@ -41,7 +41,7 @@ class Slider implements ResolverInterface
         }
 
         try {
-            $slider = $this->sliderRepository->getByIdentity($identity);
+            $slider = $this->repo->getByIdentity($identity);
         } catch (\Exception) {
             throw new GraphQlNoSuchEntityException(__('Slider "%1" not found or disabled', $identity));
         }
@@ -49,14 +49,25 @@ class Slider implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__('Slider "%1" not found or disabled', $identity));
         }
 
-        $banners = $this->bannerDataBuilder->getImages($slider);
+        $banners = $this->builder->getImages($slider);
 
         return [
             'title' => $slider->getTitle(),
             'identity' => $slider->getIdentity(),
-            'options' => $this->bannerDataBuilder->prepareOptions($slider->getOptionsList()),
-            'content' => $slider->getContent(),
+            'options' => $this->prepareOptions($slider->getOptionsList()),
             'banners' => $banners,
         ];
+    }
+
+    private function prepareOptions(array $options): array
+    {
+        //convert empty values to null
+        return array_map(function ($value) {
+            return match (true) {
+                $value === '' => null,
+                is_numeric($value) => (int) $value,
+                default => $value,
+            };
+        }, $options);
     }
 }

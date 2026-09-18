@@ -11,7 +11,7 @@ namespace Mygento\Slider\Controller\Adminhtml\Banner;
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Mygento\Slider\Model\Uploader;
+use Mygento\ImageCommon\Model\Uploader;
 
 class Upload extends \Magento\Backend\App\Action
 {
