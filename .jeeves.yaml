@@ -54,6 +54,9 @@ Mygento:
             type: date
           to_date:
             type: date
+          content:
+            type: text
+            nullable: true
           options:
             type: json
             nullable: false
