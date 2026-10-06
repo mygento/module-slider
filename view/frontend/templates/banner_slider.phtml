@@ -34,10 +34,10 @@ $thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
         <picture>
 <?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
-$hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
-$mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
-$mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
-?>
+    $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
+    $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
+    $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
+    ?>
             <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
             <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
@@ -65,10 +65,10 @@ $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
                     <picture>
 <?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
-$hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
-$mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
-$mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
-?>
+    $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
+    $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
+    $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
+    ?>
                         <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
                         <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
@@ -93,11 +93,11 @@ $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
         <ul class="splide__list">
 <?php foreach ($images as $index => $img): ?>
 <?php
-$hasThumbSmall = !empty($img['small_image']);
-$thumbSrc = $img['image'] ?? $img['default'];
-$thumbMq  = $hasThumbSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
-$thumbMqS = $hasThumbSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
-?>
+    $hasThumbSmall = !empty($img['small_image']);
+    $thumbSrc = $img['image'] ?? $img['default'];
+    $thumbMq  = $hasThumbSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
+    $thumbMqS = $hasThumbSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
+    ?>
             <li class="splide__slide">
                 <picture>
 <?php if (!empty($img)): ?>
