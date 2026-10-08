@@ -28,23 +28,24 @@ $thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
 <div id="<?= $escaper->escapeHtmlAttr($sliderIdentifier) ?>" aria-label="<?= $escaper->escapeHtmlAttr($title) ?>">
 <?php foreach ($images as $img): ?>
 <?php $hasLink = isset($img['link']) &&  '' !== trim($img['link']); ?>
+<?php $linkIndent = $hasLink ? '    ' : ''; ?>
 <?php if ($hasLink): ?>
     <a href="<?= $escaper->escapeUrl($img['link']) ?>">
 <?php endif; ?>
-        <picture>
+    <?= $linkIndent ?><picture>
 <?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
     $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
     ?>
-            <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
+        <?= $linkIndent ?><source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
-            <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
+        <?= $linkIndent ?><source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php endif; ?>
 <?php endforeach; ?>
-            <img alt="<?= $escaper->escapeHtmlAttr($img['name']) ?>" src="<?= $escaper->escapeUrl($img['default']) ?>" fetchpriority="<?= $lazy ? 'low' : 'high' ?>"<?= $lazy ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
-        </picture>
+        <?= $linkIndent ?><img alt="<?= $escaper->escapeHtmlAttr($img['name']) ?>" src="<?= $escaper->escapeUrl($img['default']) ?>" fetchpriority="<?= $lazy ? 'low' : 'high' ?>"<?= $lazy ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
+    <?= $linkIndent ?></picture>
 <?php if ($hasLink): ?>
     </a>
 <?php endif; ?>
@@ -57,25 +58,26 @@ $thumbHeightTag = $thumbHeight !== null ? ' height="' . $thumbHeight . '"' : '';
         <ul class="splide__list">
 <?php foreach ($images as $index => $img): ?>
 <?php $hasLink = isset($img['link']) &&  '' !== trim($img['link']); ?>
+<?php $linkIndent = $hasLink ? '    ' : ''; ?>
 <?php $content = (string) ($img['content'] ?? ''); ?>
             <li class="splide__slide">
 <?php if ($hasLink): ?>
                 <a href="<?= $escaper->escapeUrl($img['link']) ?>">
 <?php endif; ?>
-                    <picture>
+                <?= $linkIndent ?><picture>
 <?php foreach ($img['image_formats'] as $type => $item): ?>
 <?php
     $hasSmall = isset($item['small_image']) && !empty($item['small_image']['url']);
     $mq = $hasSmall ? ' media="(min-width: ' . $breakpoint . 'px)"' : '';
     $mqS = $hasSmall ? ' media="(max-width: ' . ($breakpoint - 1) . 'px)"' : '';
     ?>
-                        <source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
+                    <?= $linkIndent ?><source<?= $widthTag ?><?= $heightTag ?><?= $mq ?> srcset="<?= $escaper->escapeUrl($item['image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php if ($hasSmall): ?>
-                        <source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
+                    <?= $linkIndent ?><source<?= $widthSTag ?><?= $heightSTag ?><?= $mqS ?> srcset="<?= $escaper->escapeUrl($item['small_image']['srcset']) ?>" type="image/<?= $type ?>" />
 <?php endif; ?>
 <?php endforeach; ?>
-                        <img alt="<?= $escaper->escapeHtmlAttr($img['name']) ?>" src="<?= $escaper->escapeUrl($img['default']) ?>" fetchpriority="<?= ($lazy || $index !== 0) ? 'low' : 'high' ?>"<?= ($lazy || $index !== 0) ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
-                    </picture>
+                    <?= $linkIndent ?><img alt="<?= $escaper->escapeHtmlAttr($img['name']) ?>" src="<?= $escaper->escapeUrl($img['default']) ?>" fetchpriority="<?= ($lazy || $index !== 0) ? 'low' : 'high' ?>"<?= ($lazy || $index !== 0) ? ' loading="lazy"' : '' ?><?= $widthTag ?><?= $heightTag ?> />
+                <?= $linkIndent ?></picture>
 <?php if ($hasLink): ?>
                 </a>
 <?php endif; ?>
