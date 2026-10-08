@@ -35,6 +35,15 @@ class Slider extends AbstractModel implements SliderInterface
             'height_small' => ['formElement' => 'input', 'notice' => __('Small image height'), 'validation' => ['validate-number' => 1, 'validate-greater-than-zero' => 1]],
             'width_small' => ['formElement' => 'input', 'notice' => __('Small image width'), 'validation' => ['validate-number' => 1, 'validate-greater-than-zero' => 1]],
             'preload' => ['formElement' => 'checkbox', 'notice' => __('Enables Image Preload'), 'default' => false],
+            'thumbnails' => ['formElement' => 'checkbox', 'notice' => __('Enables Image Thumbnails'), 'default' => false],
+            'thumbnails_gap' => ['formElement' => 'input', 'notice' => __('Gaps Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value']],
+            'thumbnails_fixedWidth' => ['formElement' => 'input', 'notice' => __('FixedWidth Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value']],
+            'thumbnails_rewind' => ['formElement' => 'checkbox', 'notice' => __('Rewind Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value'], 'default' => false],
+            'thumbnails_pagination' => ['formElement' => 'checkbox', 'notice' => __('Pagination Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value'], 'default' => false],
+            'thumbnails_isNavigation' => ['formElement' => 'checkbox', 'notice' => __('isNavigation Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value'], 'default' => false],
+            'thumbnails_arrows' => ['formElement' => 'checkbox', 'notice' => __('Arrows Thumbnails'), 'imports' => ['visible' => '${ $.parentName }.thumbnails:value'], 'default' => false],
+            'thumbnails_width'  => ['formElement' => 'input', 'notice' => __('Thumbnail width'), 'validation' => ['validate-number' => 1, 'validate-greater-than-zero' => 1], 'imports' => ['visible' => '${ $.parentName }.thumbnails:value']],
+            'thumbnails_height' => ['formElement' => 'input', 'notice' => __('Thumbnail height'), 'validation' => ['validate-number' => 1, 'validate-greater-than-zero' => 1], 'imports' => ['visible' => '${ $.parentName }.thumbnails:value']],
         ];
     }
 

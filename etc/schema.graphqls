@@ -28,6 +28,7 @@ type Banner {
     small_image: String
     name: String!
     entity_type: String!
+    content: String
     entity_identifier: ID
     image_formats: SliderImageFormats! @doc(description: "List image formats")
 }
