@@ -36,16 +36,6 @@
             <argument name="imageUploader" xsi:type="object">Mygento\Slider\Model\Uploader</argument>
         </arguments>
     </type>
-    <type name="Mygento\Slider\Model\Source\EntityType">
-        <arguments>
-            <argument name="types" xsi:type="array">
-                <item name="custom" xsi:type="string">custom</item>
-                <item name="cms_page" xsi:type="string">cms_page</item>
-                <item name="catalog_product" xsi:type="string">catalog_product</item>
-                <item name="catalog_category" xsi:type="string">catalog_category</item>
-            </argument>
-        </arguments>
-    </type>
     <virtualType name="Mygento\Slider\Ui\DataProvider\Product\ProductSelectDataProvider" type="Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider">
         <arguments>
             <argument name="collectionFactory" xsi:type="object">Magento\Catalog\Ui\DataProvider\Product\ProductCollectionFactory</argument>

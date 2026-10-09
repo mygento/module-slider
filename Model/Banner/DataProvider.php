@@ -57,7 +57,7 @@ class DataProvider extends ModifierPoolDataProvider
             $this->loadedData[$model->getId()] = $this->prepareData($model->getData());
             $type = $model->getEntityType() ?? null;
             $identifier = $model->getEntityIdentifier() ?? null;
-            $data['entity_label'] = $resolved[$type][$identifier] ?? $identifier;
+            $this->loadedData[$model->getId()]['entity_label'] = $resolved[$type][$identifier] ?? $identifier;
         }
 
         $data = $this->dataPersistor->get('slider_banner');
@@ -142,10 +142,7 @@ class DataProvider extends ModifierPoolDataProvider
     /**
      * @param array<string, list<string>> $idsByType
      *
-     * @return array<string, array<string, array{
-     *     entity_identifier: int|string,
-     *     url?: string|null,
-     * }>>
+     * @return array<string, array<string, string>>
      */
     private function resolveEntities(array $idsByType): array
     {
