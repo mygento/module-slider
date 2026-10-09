@@ -18,4 +18,41 @@
             </parameter>
         </parameters>
     </widget>
+    <widget class="Mygento\Slider\Block\CategoryProductSlider" id="mygento_banner_slider_category_product_widget">
+        <label translate="true">Mygento Category Product Slider</label>
+        <description translate="true">Mygento Category Product Slider</description>
+        <parameters>
+            <parameter name="id_path" xsi:type="block" visible="true" required="true" sort_order="10">
+                <label translate="true">Category</label>
+                <block class="Magento\Catalog\Block\Adminhtml\Category\Widget\Chooser">
+                    <data>
+                        <item name="button" xsi:type="array">
+                            <item name="open" xsi:type="string" translate="true">Select Category...</item>
+                        </item>
+                    </data>
+                </block>
+            </parameter>
+            <parameter name="products_count" xsi:type="text" required="true" visible="true">
+                <label translate="true">Number of Products to Display</label>
+                <value>10</value>
+            </parameter>
+            <parameter name="content_text" xsi:type="block" visible="true" sort_order="70" >
+                <label translate="true"> Content</label>
+                <description><![CDATA[Html content can be added here]]></description>
+                <block class="Mygento\Slider\Block\Adminhtml\Widget\TextArea" />
+            </parameter>
+            <parameter name="sort_by" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Catalog\Sorting\Options">
+                <label>Sort By</label>
+            </parameter>
+            <parameter name="jpg" xsi:type="select" visible="true" sort_order="40" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enables jpg Images</label>
+            </parameter>
+            <parameter name="webp" xsi:type="select" visible="true" sort_order="40" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enables webp Images</label>
+            </parameter>
+            <parameter name="avif" xsi:type="select" visible="true" sort_order="40" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enables avif Images</label>
+            </parameter>
+        </parameters>
+    </widget>
 </widgets>

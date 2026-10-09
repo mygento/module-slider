@@ -63,6 +63,14 @@ type ProductSlider {
     parameters: ProductSliderParameters!
     items: [SliderProduct]
 }
+type CategoryProductSlider {
+    category: CategoryInterface
+    title: String!
+    identity: String!
+    content_text: String
+    parameters: ProductSliderParameters!
+    items: [SliderProduct]
+}
 
 type SliderProduct @doc(description: "Contains product details") {
     product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
