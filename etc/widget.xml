@@ -44,9 +44,6 @@
             <parameter name="sort_by" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Catalog\Sorting\Options">
                 <label>Sort By</label>
             </parameter>
-            <parameter name="options_separator" xsi:type="text" visible="true" sort_order="30">
-                <label translate="true">Options</label>
-            </parameter>
             <parameter name="jpg" xsi:type="select" visible="true" sort_order="40" source_model="Magento\Config\Model\Config\Source\Yesno">
                 <label translate="true">Enables jpg Images</label>
             </parameter>

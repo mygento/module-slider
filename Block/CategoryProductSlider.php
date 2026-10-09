@@ -20,6 +20,7 @@ use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Rule\Model\Condition\Sql\Builder;
 use Magento\Widget\Helper\Conditions;
+use Mygento\Slider\Model\DataBuilder\CategorySlider;
 use Mygento\Slider\Model\DataBuilder\ProductSliderBuilder;
 use Mygento\Slider\Model\ResourceModel;
 
@@ -34,8 +35,9 @@ class CategoryProductSlider extends ProductSlider
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        private ProductSliderBuilder $builder,
-        private ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
+        private CategorySlider $categorySliderBuilder,
+        ProductSliderBuilder $builder,
+        ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
         Context $context,
         CollectionFactory $productCollectionFactory,
         Visibility $catalogProductVisibility,
@@ -49,20 +51,7 @@ class CategoryProductSlider extends ProductSlider
         ?EncoderInterface $urlEncoder = null,
         ?CategoryRepositoryInterface $categoryRepository = null,
     ) {
-        parent::__construct(
-            $context,
-            $productCollectionFactory,
-            $catalogProductVisibility,
-            $httpContext,
-            $sqlBuilder,
-            $rule,
-            $conditionsHelper,
-            $data,
-            $json,
-            $layoutFactory,
-            $urlEncoder,
-            $categoryRepository,
-        );
+        parent::__construct($builder, $sliderCollectionFactory, $context, $productCollectionFactory, $catalogProductVisibility, $httpContext, $sqlBuilder, $rule, $conditionsHelper, $data, $json, $layoutFactory, $urlEncoder, $categoryRepository);
     }
 
     /**
@@ -78,14 +67,19 @@ class CategoryProductSlider extends ProductSlider
 
     public function getProductSliderIdentifier(): string
     {
-        return 'product_category_slider' . $this->getData('product_slider');
+        return 'product_category_slider' . $this->getCategoryId();
+    }
+
+    public function getCategoryId(): int
+    {
+        return $this->categorySliderBuilder->getCategoryId($this->getData());
     }
 
     public function getCollection(): Collection
     {
-        $slider = $this->getSlider();
-
-        //todo - ask
-        return $this->builder->getBaseProductsCollection($slider);
+        return $this->builder->getCategoryProductCollection(
+            $this->categorySliderBuilder->createSlider($this->getData()),
+            $this->getCategoryId(),
+        );
     }
 }
