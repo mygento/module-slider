@@ -9,23 +9,21 @@
 namespace Mygento\Slider\Model\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
+use Mygento\Slider\Model\EntityResolverPool;
 
 class EntityType implements OptionSourceInterface
 {
-    public const CUSTOM = 'custom';
-    public const CMS_PAGE = 'cms_page';
-    public const CATALOG_PRODUCT = 'catalog_product';
-    public const CATALOG_CATEGORY = 'catalog_category';
-
-    public function __construct(private array $types = []) {}
+    public function __construct(private EntityResolverPool $pool) {}
 
     public function toOptionArray(): array
     {
-        $options = [];
-        foreach ($this->types as $code => $type) {
-            $options[] = ['value' => $code, 'label' => $type];
+        $result = [
+            ['value' => 'custom', 'label' => 'custom'],
+        ];
+        foreach ($this->pool->getAllTypes() as $code) {
+            $result[] = ['value' => $code, 'label' => $code];
         }
 
-        return $options;
+        return $result;
     }
 }
