@@ -37,7 +37,7 @@ class ProductSlider extends ProductsList
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        protected ProductSliderBuilder $builder,
+        private ProductSliderBuilder $builder,
         private ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
         Context $context,
         CollectionFactory $productCollectionFactory,

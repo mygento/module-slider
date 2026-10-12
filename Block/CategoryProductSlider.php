@@ -36,7 +36,7 @@ class CategoryProductSlider extends ProductSlider
      */
     public function __construct(
         private CategorySlider $categorySliderBuilder,
-        ProductSliderBuilder $builder,
+        private ProductSliderBuilder $builder,
         ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
         Context $context,
         CollectionFactory $productCollectionFactory,
