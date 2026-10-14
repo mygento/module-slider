@@ -24,6 +24,7 @@ class CategorySlider
         private CategoryRepositoryInterface $categoryRepository,
         private Uid $uid,
         private ProductSliderFactory $productSliderFactory,
+        private CatalogEntityResolver $catalogEntityResolver,
     ) {}
 
     /**
@@ -34,7 +35,7 @@ class CategorySlider
      */
     public function resolverSlider(array $value): array
     {
-        $categoryId = $this->getCategoryId($value);
+        $categoryId = $this->catalogEntityResolver->getEntityIdByPath($value);
 
         $category = $this->categoryRepository->get($categoryId);
         $category->setUid($this->uid->encode($category->getEntityId()));
@@ -54,7 +55,7 @@ class CategorySlider
 
     public function createSlider(array $data): ProductSliderInterface
     {
-        $value = $this->normalizeValues($data);
+        $value = $this->catalogEntityResolver->normalizeValues($data);
         /** @var ProductSliderInterface $slider */
         $slider = $this->productSliderFactory->create();
         $options['parameters'] = ['sort_order' =>  $value['sort_by'], 'products_count' => $value['products_count']];
@@ -70,20 +71,7 @@ class CategorySlider
 
     public function getCategoryId(array $data): int
     {
-        $value = $this->normalizeValues($data);
-        $categoryPath = $value['id_path'] ?? null;
-        if (empty($categoryPath)) {
-            throw new \InvalidArgumentException('Category path is empty');
-        }
-
-        return $this->extractCategoryId($categoryPath);
-    }
-
-    private function extractCategoryId(string $path): int
-    {
-        $parts = explode('/', $path);
-
-        return (int) end($parts);
+        return $this->catalogEntityResolver->getEntityIdByPath($data);
     }
 
     private function getProductModels(ProductSliderInterface $slider, int $categoryId): array
@@ -100,16 +88,5 @@ class CategorySlider
         }
 
         return $result;
-    }
-
-    private function normalizeValues(array $values): array
-    {
-        foreach ($values as $name => $widgetParam) {
-            //trim prefix from graphql widget params
-            $name = preg_replace('/^param_/', '', $name);
-            $values[$name] = $widgetParam;
-        }
-
-        return $values;
     }
 }

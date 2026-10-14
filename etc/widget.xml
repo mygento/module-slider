@@ -9,6 +9,25 @@
             </parameter>
         </parameters>
     </widget>
+    <widget class="Mygento\Slider\Block\BannerSliderWithProduct" id="mygento_banner_slider_with_product_widget">
+        <label translate="true">Mygento Banner Slider with Product</label>
+        <description translate="true">Mygento Banner Slider</description>
+        <parameters>
+            <parameter name="identity" sort_order="10" required="true" visible="true" xsi:type="select" source_model="Mygento\Slider\Model\Config\Source\BannerSliderList">
+                <label>Select Product Banner Slider</label>
+            </parameter>
+            <parameter name="id_path" xsi:type="block" visible="true" required="true" sort_order="10">
+                <label translate="true">Product</label>
+                <block class="Magento\Catalog\Block\Adminhtml\Product\Widget\Chooser">
+                    <data>
+                        <item name="button" xsi:type="array">
+                            <item name="open" xsi:type="string" translate="true">Select Product...</item>
+                        </item>
+                    </data>
+                </block>
+            </parameter>
+        </parameters>
+    </widget>
     <widget class="Mygento\Slider\Block\ProductSlider" id="mygento_banner_slider_product_widget">
         <label translate="true">Mygento Product Slider</label>
         <description translate="true">Mygento Product Slider</description>
