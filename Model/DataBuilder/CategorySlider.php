@@ -14,7 +14,6 @@ use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\CatalogGraphQl\Model\Category\Hydrator;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\GraphQl\Query\Uid;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Model\ProductSliderFactory;
 
@@ -23,7 +22,6 @@ class CategorySlider
     public function __construct(
         private ProductSliderBuilder $builder,
         private CategoryRepositoryInterface $categoryRepository,
-        private Uid $uid,
         private ProductSliderFactory $productSliderFactory,
         private Hydrator $categoryHydrator,
     ) {}
@@ -39,8 +37,6 @@ class CategorySlider
         $categoryId = $this->getCategoryId($value);
 
         $category = $this->categoryRepository->get($categoryId);
-        $category->setUid($this->uid->encode($category->getEntityId()));
-
         $slider = $this->createSlider($value);
         $options = $slider->getOptions();
 
