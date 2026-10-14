@@ -10,7 +10,10 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\DataBuilder;
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Uid;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Store\Model\StoreManagerInterface;
@@ -29,6 +32,7 @@ class BannerBuilder
         private Uid $idEncoder,
         private StoreManagerInterface $storeManager,
         private Banner\CollectionFactory $factory,
+        private ProductRepositoryInterface $productRepository,
     ) {}
 
     public function getImages(SliderInterface $slider): array
@@ -84,6 +88,7 @@ class BannerBuilder
                 $item['default'] = $defaultImg['url'];
                 $item['image'] = $item['default'];
                 $item['small_image'] = $defaultSmallImg['url'] ?? null;
+                $this->addLinkedBannerEntity($item);
                 $result[] = $item;
             } catch (LocalizedException) {
                 continue;
@@ -94,6 +99,25 @@ class BannerBuilder
             $result,
             (int) $this->storeManager->getStore()->getId(),
         );
+    }
+
+    private function addLinkedBannerEntity(array &$item): void
+    {
+        if ($item['entity_type'] !== Product::ENTITY) {
+            return;
+        }
+
+        try {
+            $product = $this->productRepository->getById($item['entity_identifier']);
+        } catch (NoSuchEntityException $e) {
+            return;
+        }
+        $productData = $product->getData();
+        $productData['model'] = $product;
+        $item['entity'] = [
+            'entity_type' => Product::ENTITY,
+            'product' => $productData,
+        ];
     }
 
     private function getIntegerOption(array $options, string $key): ?int
