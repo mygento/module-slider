@@ -97,11 +97,11 @@ class ProductSliderBuilder
             ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
             ->addUrlRewrite()
             ->addStoreFilter();
+        $this->stock->addIsInStockFilterToCollection($collection);
         $collection->setPageSize($maxCount)->setCurPage(1);
         $collection->distinct(true);
-        $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);
 
-        return $collection;
+        return $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);
     }
 
     public function getCollection(ProductSliderInterface $slider): Collection
@@ -111,7 +111,6 @@ class ProductSliderBuilder
         $conditions = $this->getSliderConditions($slider);
         $conditions->collectValidatedAttributes($collection);
         $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
-        $this->stock->addIsInStockFilterToCollection($collection);
 
         return $collection;
     }
