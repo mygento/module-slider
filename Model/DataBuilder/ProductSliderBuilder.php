@@ -97,7 +97,6 @@ class ProductSliderBuilder
             ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
             ->addUrlRewrite()
             ->addStoreFilter();
-        $this->stock->addIsInStockFilterToCollection($collection);
         $collection->setPageSize($maxCount)->setCurPage(1);
         $collection->distinct(true);
         $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);

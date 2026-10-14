@@ -37,7 +37,7 @@
                 <value>10</value>
             </parameter>
             <parameter name="content_text" xsi:type="block" visible="true" sort_order="70" >
-                <label translate="true"> Content</label>
+                <label translate="true">Content</label>
                 <description><![CDATA[Html content can be added here]]></description>
                 <block class="Mygento\Slider\Block\Adminhtml\Widget\TextArea" />
             </parameter>

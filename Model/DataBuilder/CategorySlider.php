@@ -12,6 +12,7 @@ namespace Mygento\Slider\Model\DataBuilder;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\CatalogGraphQl\Model\Category\Hydrator;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Uid;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
@@ -24,6 +25,7 @@ class CategorySlider
         private CategoryRepositoryInterface $categoryRepository,
         private Uid $uid,
         private ProductSliderFactory $productSliderFactory,
+        private Hydrator $categoryHydrator,
     ) {}
 
     /**
@@ -40,11 +42,10 @@ class CategorySlider
         $category->setUid($this->uid->encode($category->getEntityId()));
 
         $slider = $this->createSlider($value);
-
         $options = $slider->getOptions();
 
         return [
-            'category' => $category->getData(),
+            'category' => $this->categoryHydrator->hydrateCategory($category, true),
             'title' => $value['title'],
             'content_text' => $value['param_content_text'],
             'parameters' => $options['parameters'] ?? [],
@@ -61,9 +62,7 @@ class CategorySlider
         foreach (['jpg', 'webp', 'avif'] as $extension) {
             $options['options'][$extension] = $value[$extension] ? 'true' : 'false';
         }
-
         $slider->setOptions($options);
-        $slider->setItems();
 
         return $slider;
     }
