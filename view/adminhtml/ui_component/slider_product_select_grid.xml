@@ -32,7 +32,7 @@
         </dataProvider>
     </dataSource>
     <listingToolbar name="listing_top">
-        <filterSearch name="title"/>
+        <filterSearch name="fulltext"/>
         <paging name="listing_paging"/>
     </listingToolbar>
     <columns name="columns">

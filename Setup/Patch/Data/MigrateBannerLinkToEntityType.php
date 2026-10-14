@@ -14,7 +14,6 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Model\ResourceModel\Banner;
-use Mygento\Slider\Model\Source\EntityType;
 
 class MigrateBannerLinkToEntityType implements DataPatchInterface
 {
@@ -25,7 +24,7 @@ class MigrateBannerLinkToEntityType implements DataPatchInterface
         $connection = $this->moduleDataSetup->getConnection();
         $connection->update(
             $this->moduleDataSetup->getTable(Banner::TABLE_NAME),
-            [BannerInterface::ENTITY_TYPE => EntityType::CUSTOM],
+            [BannerInterface::ENTITY_TYPE => 'custom'],
             [
                 BannerInterface::ENTITY_TYPE . ' IS NULL',
                 BannerInterface::ENTITY_IDENTIFIER . ' IS NOT NULL',

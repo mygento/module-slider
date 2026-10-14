@@ -165,11 +165,10 @@
                 <options class="Mygento\Slider\Model\Source\EntityType"/>
             </settings>
         </column>
-        <column name="entity_identifier">
+        <column name="entity_name" class="Mygento\Slider\Ui\Component\Listing\Columns\Name">
             <settings>
-                <filter>text</filter>
-                <dataType>text</dataType>
-                <label translate="true">Identifier</label>
+                <sortable>false</sortable>
+                <label translate="true">Entity Name</label>
             </settings>
         </column>
         <column name="image" component="Magento_Ui/js/grid/columns/thumbnail" class="Mygento\Slider\Ui\Component\Listing\Columns\Image">
