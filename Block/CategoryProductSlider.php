@@ -9,12 +9,14 @@
 namespace Mygento\Slider\Block;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogWidget\Model\Rule;
 use Magento\Framework\App\Http;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\View\LayoutFactory;
@@ -37,6 +39,7 @@ class CategoryProductSlider extends ProductSlider
     public function __construct(
         private CategorySlider $categorySliderBuilder,
         private ProductSliderBuilder $builder,
+        private CategoryRepositoryInterface $categoryRepository,
         ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
         Context $context,
         CollectionFactory $productCollectionFactory,
@@ -49,7 +52,6 @@ class CategoryProductSlider extends ProductSlider
         ?Json $json = null,
         ?LayoutFactory $layoutFactory = null,
         ?EncoderInterface $urlEncoder = null,
-        ?CategoryRepositoryInterface $categoryRepository = null,
     ) {
         parent::__construct($builder, $sliderCollectionFactory, $context, $productCollectionFactory, $catalogProductVisibility, $httpContext, $sqlBuilder, $rule, $conditionsHelper, $data, $json, $layoutFactory, $urlEncoder, $categoryRepository);
     }
@@ -75,11 +77,24 @@ class CategoryProductSlider extends ProductSlider
         return $this->categorySliderBuilder->getCategoryId($this->getData());
     }
 
-    public function getCollection(): Collection
+    public function getCollection(): ?Collection
     {
-        return $this->builder->getCategoryProductCollection(
-            $this->categorySliderBuilder->createSlider($this->getData()),
-            $this->getCategoryId(),
-        );
+        try {
+            return $this->builder->getCategoryProductCollection(
+                $this->categorySliderBuilder->createSlider($this->getData()),
+                $this->getCategory(),
+            );
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @throws NoSuchEntityException
+     * @return CategoryInterface
+     */
+    public function getCategory(): CategoryInterface
+    {
+        return $this->categoryRepository->get($this->getCategoryId());
     }
 }

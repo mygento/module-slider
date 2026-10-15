@@ -94,7 +94,7 @@ class ProductSlider extends ProductsList
         return 'product_slider' . $this->getData('product_slider');
     }
 
-    public function getCollection(): Collection
+    public function getCollection(): ?Collection
     {
         return $this->builder->getCollection($this->getSlider());
     }

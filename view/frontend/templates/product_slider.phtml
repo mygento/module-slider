@@ -30,7 +30,7 @@ $breakpoints = array_reduce(
 
 $breakpoints = empty($breakpoints) ? null : json_encode($breakpoints);
 ?>
-<?php if ($items->getSize() > 0): ?>
+<?php if ($items?->getSize() > 0): ?>
 <section id="<?= $block->getProductSliderIdentifier() ?>" aria-label="<?= $block->getTitle() ?>" class="splide block widget">
     <div class="splide__track products-grid">
         <ul class="splide__list">
