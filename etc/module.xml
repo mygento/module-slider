@@ -4,6 +4,7 @@
         <sequence>
             <module name="Magento_CatalogWidget" />
             <module name="Mygento_ImageCommon" />
+            <module name="Magento_CatalogGraphQl" />
         </sequence>
     </module>
 </config>

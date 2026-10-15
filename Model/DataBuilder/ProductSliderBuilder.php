@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\DataBuilder;
 
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Block\Product\Image;
 use Magento\Catalog\Block\Product\ImageFactory;
 use Magento\Catalog\Model\Config;
@@ -73,10 +74,18 @@ class ProductSliderBuilder
         ];
     }
 
-    public function getCollection(ProductSliderInterface $slider): Collection
+    public function getCategoryProductCollection(ProductSliderInterface $slider, CategoryInterface $category): Collection
+    {
+        $collection = $this->getBaseProductsCollection($slider);
+        $collection->addCategoryFilter($category);
+
+        return $collection;
+    }
+
+    public function getBaseProductsCollection(ProductSliderInterface $slider): Collection
     {
         $options = $slider->getOptions();
-        $maxCount = $options['products_count'] ?? 12;
+        $maxCount = $options['parameters']['products_count'] ?? 12;
 
         /** @var Collection $collection */
         $collection = $this->productCollectionFactory->create();
@@ -89,23 +98,29 @@ class ProductSliderBuilder
             ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
             ->addUrlRewrite()
             ->addStoreFilter();
-
-        $conditions = $this->getSliderConditions($slider);
-        $conditions->collectValidatedAttributes($collection);
-        $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
         $this->stock->addIsInStockFilterToCollection($collection);
-
         $collection->setPageSize($maxCount)->setCurPage(1);
         $collection->distinct(true);
 
         return $this->sorting->applySorting($options['parameters']['sort_order'] ?? '', $collection);
     }
 
+    public function getCollection(ProductSliderInterface $slider): Collection
+    {
+        /** @var Collection $collection */
+        $collection = $this->getBaseProductsCollection($slider);
+        $conditions = $this->getSliderConditions($slider);
+        $conditions->collectValidatedAttributes($collection);
+        $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
+
+        return $collection;
+    }
+
     public function getImageData(ProductSliderInterface $slider, Product $product): array
     {
         $img = $product->getData('thumbnail');
         $options = $slider->getOptions();
-        $jpg = isset($options['jpg']) && $options['jpg'] === true;
+        $jpg = isset($options['options']['jpg']) && $options['options']['jpg'] === true;
         $sizes = $this->getSizes($product);
         $width = $sizes['width'] ?? null;
         $height = $sizes['height'] ?? null;

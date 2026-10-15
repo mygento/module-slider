@@ -94,7 +94,7 @@ class ProductSlider extends ProductsList
         return 'product_slider' . $this->getData('product_slider');
     }
 
-    public function getCollection(): Collection
+    public function getCollection(): ?Collection
     {
         return $this->builder->getCollection($this->getSlider());
     }
@@ -133,7 +133,7 @@ class ProductSlider extends ProductsList
         return $this;
     }
 
-    private function getSlider(): ?ProductSliderInterface
+    protected function getSlider(): ?ProductSliderInterface
     {
         /** @var ResourceModel\ProductSlider\Collection $collection */
         $collection = $this->sliderCollectionFactory->create();
