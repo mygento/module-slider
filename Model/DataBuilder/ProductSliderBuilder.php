@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\DataBuilder;
 
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Block\Product\Image;
 use Magento\Catalog\Block\Product\ImageFactory;
 use Magento\Catalog\Model\Config;
@@ -73,10 +74,10 @@ class ProductSliderBuilder
         ];
     }
 
-    public function getCategoryProductCollection(ProductSliderInterface $slider, int $categoryId): Collection
+    public function getCategoryProductCollection(ProductSliderInterface $slider, CategoryInterface $category): Collection
     {
         $collection = $this->getBaseProductsCollection($slider);
-        $collection->addCategoriesFilter(['eq' => $categoryId]);
+        $collection->addCategoryFilter($category);
 
         return $collection;
     }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Mygento\Slider\Model\DataBuilder;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\CatalogGraphQl\Model\Category\Hydrator;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -45,7 +46,7 @@ class CategorySlider
             'title' => $value['title'],
             'content_text' => $value['param_content_text'],
             'parameters' => $options['parameters'] ?? [],
-            'items' => $this->getProductModels($slider, (int) $categoryId),
+            'items' => $this->getProductModels($slider, $category),
         ];
     }
 
@@ -81,9 +82,9 @@ class CategorySlider
         return (int) end($parts);
     }
 
-    private function getProductModels(ProductSliderInterface $slider, int $categoryId): array
+    private function getProductModels(ProductSliderInterface $slider, CategoryInterface $category): array
     {
-        $productsCollection = $this->builder->getCategoryProductCollection($slider, $categoryId);
+        $productsCollection = $this->builder->getCategoryProductCollection($slider, $category);
         $result = [];
         /** @var ProductInterface $product */
         foreach ($productsCollection as $product) {
