@@ -66,6 +66,7 @@ class Product implements EntityResolverInterface
             $result[$id] = [
                 'url' => $urls[$id] ?? null,
                 'entity_identifier' => $product->getSku(),
+                'sku' => $product->getSku(),
             ];
         }
 

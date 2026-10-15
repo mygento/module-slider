@@ -114,6 +114,5 @@ interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\EntityResol
 }
 
 type BannerEntityCatalogProduct implements BannerEntity {
-    product: ProductInterface
-    sku: String
+    product: ProductInterface @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
 }
