@@ -34,6 +34,8 @@ class Slider implements ResolverInterface
         ?array $value = null,
         ?array $args = null,
     ) {
+        $requestedFields = $info->getFieldSelection(3);
+        $requestedEntityFields = $requestedFields['banners']['entity'] ?? [];
         $identity = $args['identity'] ?? $value['identity'] ?? $value['param_identity'] ?? null;
 
         if (!$identity) {
@@ -49,7 +51,7 @@ class Slider implements ResolverInterface
             throw new GraphQlNoSuchEntityException(__('Slider "%1" not found or disabled', $identity));
         }
 
-        $banners = $this->builder->getImages($slider);
+        $banners = $this->builder->getImages($slider, $requestedEntityFields);
 
         return [
             'title' => $slider->getTitle(),
