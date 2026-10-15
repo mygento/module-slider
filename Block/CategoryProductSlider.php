@@ -33,7 +33,7 @@ use Mygento\Slider\Model\ResourceModel;
 class CategoryProductSlider extends ProductSlider
 {
     protected $_template = 'Mygento_Slider::product_slider.phtml';
-    private array $sliders = [];
+    private ?ProductSliderInterface $slider = null;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -102,12 +102,11 @@ class CategoryProductSlider extends ProductSlider
 
     protected function getSlider(): ProductSliderInterface
     {
-        $categoryId = $this->getCategoryId();
-        if (!isset($this->sliders[$categoryId])) {
-            $this->sliders[$categoryId] = $this->categorySliderBuilder->createSlider($this->getData());
-            $this->setData('product_slider', $this->sliders[$categoryId]);
+        if ($this->slider === null) {
+            $this->slider = $this->categorySliderBuilder->createSlider($this->getData());
+            $this->setData('product_slider', $this->slider);
         }
 
-        return $this->sliders[$categoryId];
+        return $this->slider;
     }
 }
