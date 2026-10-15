@@ -33,7 +33,7 @@ class BannerBuilder
         private BannerLinkedEntityBuilder $linkedEntityBuilder,
     ) {}
 
-    public function getImages(SliderInterface $slider): array
+    public function getImages(SliderInterface $slider, $requestedFields): array
     {
         $options = $slider->getOptionsList();
         $jpg = isset($options['jpg']) && $options['jpg'] === true;
@@ -92,7 +92,7 @@ class BannerBuilder
             }
         }
         $storeId = (int) $this->storeManager->getStore()->getId();
-        $result = $this->linkedEntityBuilder->addEntities($result, $storeId);
+        $result = $this->linkedEntityBuilder->addEntities($result, $storeId, $requestedFields);
 
         return $this->linkResolver->addLinks(
             $result,

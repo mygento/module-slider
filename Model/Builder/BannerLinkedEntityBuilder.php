@@ -16,10 +16,10 @@ class BannerLinkedEntityBuilder
 {
     public function __construct(private EntityResolverPool $poolResolver) {}
 
-    public function addEntities(array $items, int $storeId): array
+    public function addEntities(array $items, int $storeId, $requestedFields): array
     {
         $idsByType = $this->collectIdsByType($items);
-        $resolved = $this->resolveEntities($idsByType, $storeId);
+        $resolved = $this->resolveEntities($idsByType, $storeId, $requestedFields);
 
         foreach ($items as &$item) {
             $this->addEntityIdentitiesField($item, $resolved);
@@ -64,7 +64,7 @@ class BannerLinkedEntityBuilder
         return $idsByType;
     }
 
-    private function resolveEntities(array $idsByType, int $storeId): array
+    private function resolveEntities(array $idsByType, int $storeId, ?array $requestedFields = []): array
     {
         $resolved = [];
 
@@ -78,6 +78,7 @@ class BannerLinkedEntityBuilder
             $resolved[$type] = $resolver->resolveData(
                 array_unique($ids),
                 $storeId,
+                $requestedFields,
             );
         }
 
