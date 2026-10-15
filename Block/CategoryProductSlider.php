@@ -22,6 +22,7 @@ use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\View\LayoutFactory;
 use Magento\Rule\Model\Condition\Sql\Builder;
 use Magento\Widget\Helper\Conditions;
+use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Model\DataBuilder\CategorySlider;
 use Mygento\Slider\Model\DataBuilder\ProductSliderBuilder;
 use Mygento\Slider\Model\ResourceModel;
@@ -81,7 +82,7 @@ class CategoryProductSlider extends ProductSlider
     {
         try {
             return $this->builder->getCategoryProductCollection(
-                $this->categorySliderBuilder->createSlider($this->getData()),
+                $this->getSlider(),
                 $this->getCategory(),
             );
         } catch (\Exception $e) {
@@ -96,5 +97,13 @@ class CategoryProductSlider extends ProductSlider
     public function getCategory(): CategoryInterface
     {
         return $this->categoryRepository->get($this->getCategoryId());
+    }
+
+    protected function getSlider(): ProductSliderInterface
+    {
+        $slider = $this->categorySliderBuilder->createSlider($this->getData());
+        $this->setData('product_slider', $slider);
+
+        return $slider;
     }
 }

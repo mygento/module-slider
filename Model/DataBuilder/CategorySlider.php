@@ -36,7 +36,6 @@ class CategorySlider
     public function resolverSlider(array $value): array
     {
         $categoryId = $this->getCategoryId($value);
-
         $category = $this->categoryRepository->get($categoryId);
         $slider = $this->createSlider($value);
         $options = $slider->getOptions();
@@ -57,9 +56,11 @@ class CategorySlider
         $slider = $this->productSliderFactory->create();
         $options['parameters'] = ['sort_order' =>  $value['sort_by'], 'products_count' => $value['products_count']];
         foreach (['jpg', 'webp', 'avif'] as $extension) {
-            $options['options'][$extension] = $value[$extension] ? 'true' : 'false';
+            $ext = $value[$extension] ?? 0;
+            $options['options'][$extension] = $ext ? 'true' : 'false';
         }
         $slider->setOptions($options);
+        $slider->setActive(true);
 
         return $slider;
     }
