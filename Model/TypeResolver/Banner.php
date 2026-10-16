@@ -8,11 +8,11 @@
 
 declare(strict_types=1);
 
-namespace Mygento\Slider\Model\EntityResolver;
+namespace Mygento\Slider\Model\TypeResolver;
 
 use Magento\Framework\GraphQl\Query\Resolver\TypeResolverInterface;
 
-class TypeResolver implements TypeResolverInterface
+class Banner implements TypeResolverInterface
 {
     /**
      * @inheritdoc
