@@ -16,7 +16,7 @@ class BannerLinkedEntityBuilder
 {
     public function __construct(private EntityResolverPool $poolResolver) {}
 
-    public function addEntities(array $items, int $storeId, $requestedFields): array
+    public function addEntities(array $items, int $storeId, array $requestedFields = []): array
     {
         $idsByType = $this->collectIdsByType($items);
         $resolved = $this->resolveEntities($idsByType, $storeId, $requestedFields);

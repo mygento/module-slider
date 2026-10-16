@@ -33,7 +33,7 @@ class BannerBuilder
         private BannerLinkedEntityBuilder $linkedEntityBuilder,
     ) {}
 
-    public function getImages(SliderInterface $slider, $requestedFields): array
+    public function getImages(SliderInterface $slider, array $requestedFields = []): array
     {
         $options = $slider->getOptionsList();
         $jpg = isset($options['jpg']) && $options['jpg'] === true;
