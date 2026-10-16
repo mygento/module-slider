@@ -109,7 +109,7 @@ type Query {
     ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
 }
 
-interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\EntityResolver\\BannerEntityResolver") {
+interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\EntityResolver\\TypeResolver") {
 }
 
 type BannerEntityCatalogProduct implements BannerEntity {

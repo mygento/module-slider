@@ -12,7 +12,7 @@ namespace Mygento\Slider\Model\EntityResolver;
 
 use Magento\Framework\GraphQl\Query\Resolver\TypeResolverInterface;
 
-class BannerEntityResolver implements TypeResolverInterface
+class TypeResolver implements TypeResolverInterface
 {
     /**
      * @inheritdoc
