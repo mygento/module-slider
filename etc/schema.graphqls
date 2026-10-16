@@ -31,6 +31,7 @@ type Banner {
     content: String
     entity_identifier: ID
     image_formats: SliderImageFormats! @doc(description: "List image formats")
+    entity: BannerEntity
 }
 
 type SliderImageFormats {
@@ -106,4 +107,11 @@ type Query {
     productSlider(
         identity: String!,
     ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+}
+
+interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\TypeResolver\\Banner") {
+}
+
+type BannerEntityCatalogProduct implements BannerEntity {
+    product: ProductInterface @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
 }
