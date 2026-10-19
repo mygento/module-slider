@@ -13,19 +13,49 @@ namespace Mygento\Slider\Model\DataBuilder;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Block\Product\ImageFactory;
+use Magento\Catalog\Model\Config;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogGraphQl\Model\Category\Hydrator;
+use Magento\CatalogInventory\Helper\Stock;
+use Magento\CatalogWidget\Model\Rule;
+use Magento\Framework\App\State;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Rule\Model\Condition\Sql\Builder;
+use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
+use Mygento\Slider\Model\Catalog\Sorting;
 use Mygento\Slider\Model\ProductSliderFactory;
 
-class CategorySlider
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
+class CategorySlider extends ProductSliderBuilder
 {
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
-        private ProductSliderBuilder $builder,
         private CategoryRepositoryInterface $categoryRepository,
         private ProductSliderFactory $productSliderFactory,
         private Hydrator $categoryHydrator,
-    ) {}
+        Resizer $service,
+        Sorting $sorting,
+        Visibility $catalogProductVisibility,
+        Config $catalogConfig,
+        Json $serializer,
+        Builder $sqlBuilder,
+        Stock $stock,
+        Rule $rule,
+        State $appState,
+        CollectionFactory $productCollectionFactory,
+        ImageFactory $imageFactory,
+    ) {
+        parent::__construct($service, $sorting, $catalogProductVisibility, $catalogConfig, $serializer, $sqlBuilder, $stock, $rule, $appState, $productCollectionFactory, $imageFactory);
+    }
 
     /**
      * @param array $value
@@ -76,6 +106,19 @@ class CategorySlider
         return $this->extractCategoryId($categoryPath);
     }
 
+    public function getSlider($data): ProductSliderInterface
+    {
+        return $this->createSlider($data);
+    }
+
+    public function getCategoryProductCollection(ProductSliderInterface $slider, CategoryInterface $category): Collection
+    {
+        $collection = $this->getBaseProductsCollection($slider);
+        $collection->addCategoryFilter($category);
+
+        return $collection;
+    }
+
     private function extractCategoryId(string $path): int
     {
         $parts = explode('/', $path);
@@ -85,11 +128,11 @@ class CategorySlider
 
     private function getProductModels(ProductSliderInterface $slider, CategoryInterface $category): array
     {
-        $productsCollection = $this->builder->getCategoryProductCollection($slider, $category);
+        $productsCollection = $this->getCategoryProductCollection($slider, $category);
         $result = [];
         /** @var ProductInterface $product */
         foreach ($productsCollection as $product) {
-            $imageFormats = $this->builder->getImageData($slider, $product);
+            $imageFormats = $this->getImageData($slider, $product);
             $imageFormats['product'] = ['model' => $product];
             $imageFormats['sku'] = $product->getSku();
 

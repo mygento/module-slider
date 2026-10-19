@@ -37,8 +37,9 @@ class ProductSlider extends ProductsList
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        private ProductSliderBuilder $builder,
-        private ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
+        protected ProductSliderBuilder $builder,
+        protected ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
+        protected CategoryRepositoryInterface $categoryRepository,
         Context $context,
         CollectionFactory $productCollectionFactory,
         Visibility $catalogProductVisibility,
@@ -50,7 +51,6 @@ class ProductSlider extends ProductsList
         ?Json $json = null,
         ?LayoutFactory $layoutFactory = null,
         ?EncoderInterface $urlEncoder = null,
-        ?CategoryRepositoryInterface $categoryRepository = null,
     ) {
         parent::__construct(
             $context,

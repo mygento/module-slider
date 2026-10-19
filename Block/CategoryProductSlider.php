@@ -8,55 +8,14 @@
 
 namespace Mygento\Slider\Block;
 
-use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\CatalogWidget\Model\Rule;
-use Magento\Framework\App\Http;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\Url\EncoderInterface;
-use Magento\Framework\View\LayoutFactory;
-use Magento\Rule\Model\Condition\Sql\Builder;
-use Magento\Widget\Helper\Conditions;
 use Mygento\Slider\Api\Data\ProductSliderInterface;
-use Mygento\Slider\Model\DataBuilder\CategorySlider;
-use Mygento\Slider\Model\DataBuilder\ProductSliderBuilder;
-use Mygento\Slider\Model\ResourceModel;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class CategoryProductSlider extends ProductSlider
 {
     protected $_template = 'Mygento_Slider::product_slider.phtml';
     private ?ProductSliderInterface $slider = null;
-
-    /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
-     */
-    public function __construct(
-        private CategorySlider $categorySliderBuilder,
-        private ProductSliderBuilder $builder,
-        private CategoryRepositoryInterface $categoryRepository,
-        ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
-        Context $context,
-        CollectionFactory $productCollectionFactory,
-        Visibility $catalogProductVisibility,
-        Http\Context $httpContext,
-        Builder $sqlBuilder,
-        Rule $rule,
-        Conditions $conditionsHelper,
-        array $data = [],
-        ?Json $json = null,
-        ?LayoutFactory $layoutFactory = null,
-        ?EncoderInterface $urlEncoder = null,
-    ) {
-        parent::__construct($builder, $sliderCollectionFactory, $context, $productCollectionFactory, $catalogProductVisibility, $httpContext, $sqlBuilder, $rule, $conditionsHelper, $data, $json, $layoutFactory, $urlEncoder, $categoryRepository);
-    }
 
     /**
      * @inheritdoc
@@ -76,7 +35,12 @@ class CategoryProductSlider extends ProductSlider
 
     public function getCategoryId(): int
     {
-        return $this->categorySliderBuilder->getCategoryId($this->getData());
+        return $this->builder->getCategoryId($this->getData());
+    }
+
+    public function getCategory(): CategoryInterface
+    {
+        return $this->categoryRepository->get($this->getCategoryId());
     }
 
     public function getCollection(): ?Collection
@@ -91,19 +55,10 @@ class CategoryProductSlider extends ProductSlider
         }
     }
 
-    /**
-     * @throws NoSuchEntityException
-     * @return CategoryInterface
-     */
-    public function getCategory(): CategoryInterface
-    {
-        return $this->categoryRepository->get($this->getCategoryId());
-    }
-
     protected function getSlider(): ProductSliderInterface
     {
         if ($this->slider === null) {
-            $this->slider = $this->categorySliderBuilder->createSlider($this->getData());
+            $this->slider = $this->builder->getSlider($this->getData());
             $this->setData('product_slider', $this->slider);
         }
 
