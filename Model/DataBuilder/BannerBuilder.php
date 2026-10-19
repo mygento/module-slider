@@ -17,7 +17,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Mygento\ImageCommon\Model\Resizer;
 use Mygento\Slider\Api\Data\BannerInterface;
 use Mygento\Slider\Api\Data\SliderInterface;
-use Mygento\Slider\Model\Builder\BannerLinkedEntityBuilder;
+use Mygento\Slider\Model\Builder\BannerLinkedEntity;
 use Mygento\Slider\Model\Builder\LinkResolver;
 use Mygento\Slider\Model\ResourceModel\Banner;
 
@@ -30,7 +30,7 @@ class BannerBuilder
         private Uid $idEncoder,
         private StoreManagerInterface $storeManager,
         private Banner\CollectionFactory $factory,
-        private BannerLinkedEntityBuilder $linkedEntityBuilder,
+        private BannerLinkedEntity $linkedEntityBuilder,
     ) {}
 
     public function getImages(SliderInterface $slider, array $requestedFields = []): array

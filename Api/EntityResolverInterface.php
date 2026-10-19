@@ -18,8 +18,8 @@ interface EntityResolverInterface
 
     /**
      * @param string[] $ids
-     * @param string[]|null $requestedFields
+     * @param string[] $requestedFields
      * @return array<string, array{url: string|null, entity_identifier: string}>
      */
-    public function resolveData(array $ids, int $storeId, ?array $requestedFields = []): array;
+    public function resolveData(array $ids, int $storeId, array $requestedFields = []): array;
 }

@@ -12,7 +12,7 @@ namespace Mygento\Slider\Model\Builder;
 
 use Mygento\Slider\Model\EntityResolverPool;
 
-class BannerLinkedEntityBuilder
+class BannerLinkedEntity
 {
     public function __construct(private EntityResolverPool $poolResolver) {}
 
@@ -64,7 +64,7 @@ class BannerLinkedEntityBuilder
         return $idsByType;
     }
 
-    private function resolveEntities(array $idsByType, int $storeId, ?array $requestedFields = []): array
+    private function resolveEntities(array $idsByType, int $storeId, array $requestedFields = []): array
     {
         $resolved = [];
 

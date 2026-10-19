@@ -54,7 +54,7 @@ class Category implements EntityResolverInterface
      * @param string[]|null $requestedFields
      * @return array<string, array{url: string|null, entity_identifier: string}>
      */
-    public function resolveData(array $ids, int $storeId, ?array $requestedFields = []): array
+    public function resolveData(array $ids, int $storeId, array $requestedFields = []): array
     {
         $result = [];
         $urls = $this->resolveUrl($ids, $storeId);

@@ -57,10 +57,10 @@ class Product implements EntityResolverInterface
     /**
      * @param string[] $ids
      * @param int $storeId
-     * @param string[]|null $requestedFields
+     * @param string[] $requestedFields
      * @return array<string, array{url: string|null, entity_identifier: string, sku: string, product: array}>
      */
-    public function resolveData(array $ids, int $storeId, ?array $requestedFields = []): array
+    public function resolveData(array $ids, int $storeId, array $requestedFields = []): array
     {
         $result = [];
         $collection = $this->getCollection($ids);
