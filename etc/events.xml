@@ -24,4 +24,7 @@
     <event name="mygento_slider_api_data_bannerinterface_delete_after">
         <observer instance="Magento\Framework\EntityManager\Observer\AfterEntityDelete" name="legacy_mygento_slider_banner_after_delete"/>
     </event>
+    <event name="catalog_category_save_after">
+        <observer name="mygento_slider_category_banner_cache" instance="Mygento\Slider\Observer\CategoryBannerCacheInvalidator" />
+    </event>
 </config>
