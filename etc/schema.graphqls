@@ -73,7 +73,9 @@ type CategoryProductSlider
 }
 
 type SliderProduct @doc(description: "Contains product details") {
-    product: ProductInterface! @doc(description: "Product.") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
+    product: ProductInterface! @doc(description: "Product.")
+    @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product")
+    @cache(cacheIdentity: "Magento\\CatalogGraphQl\\Model\\Resolver\\Product\\Identity")
     image_formats: ImageFormats! @doc(description: "List image formats")
     image: String!
 }

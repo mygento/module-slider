@@ -135,6 +135,8 @@ class CategorySlider extends ProductSliderBuilder
             $imageFormats = $this->getImageData($slider, $product);
             $imageFormats['product'] = ['model' => $product];
             $imageFormats['sku'] = $product->getSku();
+            $imageFormats['items'][] = ['entity_id' => $product->getEntityId()];
+            $imageFormats['categories'][] = $category->getEntityId();
 
             $result[] = $imageFormats;
         }
