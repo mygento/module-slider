@@ -12,6 +12,8 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\AttributeProcessor;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Mygento\Slider\Api\EntityResolverInterface;
 
@@ -22,6 +24,8 @@ class Product implements EntityResolverInterface
     public function __construct(
         private ResourceConnection $resourceConnection,
         private CollectionFactory $factory,
+        private SearchCriteriaBuilder $searchCriteriaBuilder,
+        private AttributeProcessor $attributeProcessor,
     ) {}
 
     /**
@@ -52,20 +56,33 @@ class Product implements EntityResolverInterface
 
     /**
      * @param string[] $ids
-     * @return array<string, array{url: string|null, entity_identifier: string}>
+     * @param int $storeId
+     * @param string[] $requestedFields
+     * @return array<string, array{url: string|null, entity_identifier: string, sku: string, product: array}>
      */
-    public function resolveData(array $ids, int $storeId): array
+    public function resolveData(array $ids, int $storeId, array $requestedFields = []): array
     {
         $result = [];
         $collection = $this->getCollection($ids);
         $urls = $this->resolveUrl($ids, $storeId);
+        $requestedEntityFields = $requestedFields['product']  ?? [];
+        $attributeNames = array_keys($requestedEntityFields);
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
+        if ($attributeNames) {
+            $this->attributeProcessor->process(
+                $collection,
+                $this->searchCriteriaBuilder->create(),
+                $attributeNames,
+            );
+        }
         /** @var ProductInterface $product */
         foreach ($collection as $product) {
             $id = (string) $product->getId();
             $result[$id] = [
                 'url' => $urls[$id] ?? null,
                 'entity_identifier' => $product->getSku(),
+                'sku' => $product->getSku(),
+                'product' => ['model' => $product],
             ];
         }
 
