@@ -37,8 +37,9 @@ class ProductSlider extends ProductsList
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        private ProductSliderBuilder $builder,
-        private ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
+        protected ProductSliderBuilder $builder,
+        protected ResourceModel\ProductSlider\CollectionFactory $sliderCollectionFactory,
+        protected CategoryRepositoryInterface $categoryRepository,
         Context $context,
         CollectionFactory $productCollectionFactory,
         Visibility $catalogProductVisibility,
@@ -50,7 +51,6 @@ class ProductSlider extends ProductsList
         ?Json $json = null,
         ?LayoutFactory $layoutFactory = null,
         ?EncoderInterface $urlEncoder = null,
-        ?CategoryRepositoryInterface $categoryRepository = null,
     ) {
         parent::__construct(
             $context,
@@ -94,7 +94,7 @@ class ProductSlider extends ProductsList
         return 'product_slider' . $this->getData('product_slider');
     }
 
-    public function getCollection(): Collection
+    public function getCollection(): ?Collection
     {
         return $this->builder->getCollection($this->getSlider());
     }
@@ -133,7 +133,7 @@ class ProductSlider extends ProductsList
         return $this;
     }
 
-    private function getSlider(): ?ProductSliderInterface
+    protected function getSlider(): ?ProductSliderInterface
     {
         /** @var ResourceModel\ProductSlider\Collection $collection */
         $collection = $this->sliderCollectionFactory->create();

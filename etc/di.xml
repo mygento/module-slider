@@ -331,4 +331,10 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Mygento\Slider\Block\CategoryProductSlider">
+        <arguments>
+            <argument name="builder" xsi:type="object">Mygento\Slider\Model\DataBuilder\CategorySlider</argument>
+        </arguments>
+    </type>
 </config>
