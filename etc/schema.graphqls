@@ -61,7 +61,7 @@ type ProductSlider {
     identity: String!
     options: ProductSliderOptions!
     parameters: ProductSliderParameters!
-    items: [SliderProduct]
+    items: [SliderProduct!]!
 }
 type CategoryProductSlider
 {
@@ -69,7 +69,7 @@ type CategoryProductSlider
     title: String!
     content_text: String
     parameters: ProductSliderParameters!
-    items: [SliderProduct]!
+    items: [SliderProduct!]!
 }
 
 type SliderProduct @doc(description: "Contains product details") {

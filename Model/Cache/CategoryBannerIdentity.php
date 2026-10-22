@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Mygento\Slider\Model\Cache;
 
+use Magento\Catalog\Model\Category;
 use Magento\Framework\GraphQl\Query\Resolver\IdentityInterface;
 
 class CategoryBannerIdentity implements IdentityInterface
@@ -24,6 +25,14 @@ class CategoryBannerIdentity implements IdentityInterface
      */
     public function getIdentities(array $resolvedData): array
     {
+        $cacheTags = [];
+
+        if (!empty($resolvedData['category']['entity_id'])) {
+            $categoryId = (int) $resolvedData['category']['entity_id'];
+            $cacheTags[] = Category::CACHE_TAG;
+            $cacheTags[] = Category::CACHE_TAG . '_' . $categoryId;
+            $cacheTags[] = self::CACHE_TAG . '_' . $categoryId;
+        }
         $cacheTags[] = self::CACHE_TAG;
 
         return $cacheTags;
