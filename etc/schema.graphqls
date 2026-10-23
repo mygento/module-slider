@@ -120,6 +120,7 @@ type Query {
 }
 
 interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\TypeResolver\\Banner") {
+    entity_type: String!
 }
 
 type BannerEntityCatalogProduct implements BannerEntity {
