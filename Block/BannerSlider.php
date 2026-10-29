@@ -121,6 +121,7 @@ class BannerSlider extends Template implements BlockInterface
             $attr = [
                 'rel' => 'preload',
                 'as' => 'image',
+                'fetchpriority' => 'high',
                 'imagesrcset' => $im['image']['srcset'],
             ];
             if ($hasSmall) {
