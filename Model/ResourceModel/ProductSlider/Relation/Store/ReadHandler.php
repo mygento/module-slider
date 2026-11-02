@@ -20,7 +20,7 @@ class ReadHandler implements ExtensionInterface
 
     /**
      * @inheritDoc
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function execute($entity, $arguments = [])
     {

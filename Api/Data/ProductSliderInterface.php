@@ -38,7 +38,7 @@ interface ProductSliderInterface
      * Get identity
      * @return string
      */
-    public function getIdentity(): string;
+    public function getIdentity(): ?string;
 
     /**
      * Set identity
@@ -74,7 +74,7 @@ interface ProductSliderInterface
      * Get conditions
      * @return string
      */
-    public function getConditions(): string;
+    public function getConditions(): ?string;
 
     /**
      * Set conditions

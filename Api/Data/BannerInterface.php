@@ -18,9 +18,9 @@ interface BannerInterface
     public const NAME = 'name';
     public const FROM_DATE = 'from_date';
     public const TO_DATE = 'to_date';
-    public const CONTENT = 'content';
     public const ENTITY_TYPE = 'entity_type';
     public const ENTITY_IDENTIFIER = 'entity_identifier';
+    public const CONTENT = 'content';
     public const IMAGE = 'image';
     public const SMALL_IMAGE = 'small_image';
     public const STORE_ID = 'store_id';
@@ -126,7 +126,7 @@ interface BannerInterface
      * Get image
      * @return string
      */
-    public function getImage(): string;
+    public function getImage(): ?string;
 
     /**
      * Set image

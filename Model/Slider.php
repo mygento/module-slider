@@ -16,6 +16,11 @@ class Slider extends AbstractModel implements SliderInterface
     /** @inheritDoc */
     protected $_eventPrefix = 'mygento_slider_slider';
 
+    public function getIdentities(): array
+    {
+        return [self::CACHE_TAG . '_' . $this->getIdentity()];
+    }
+
     public static function getSliderOptions(): array
     {
         return [

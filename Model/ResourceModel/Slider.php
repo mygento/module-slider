@@ -8,22 +8,26 @@
 
 namespace Mygento\Slider\Model\ResourceModel;
 
-use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Context;
 
 class Slider extends AbstractDb
 {
     public const TABLE_NAME = 'mygento_slider';
     public const TABLE_PRIMARY_KEY = 'id';
 
-    public function __construct(
-        private EntityManager $entityManager,
-        Context $context,
-        ?string $connectionName = null,
-    ) {
-        parent::__construct($context, $connectionName);
+    public function loadByIdentity(AbstractModel $object, string $identity): AbstractModel
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from($this->getMainTable())
+            ->where('identity = :identity');
+
+        $data = $connection->fetchRow($select, [':identity' => $identity]);
+
+        $object->setData($data);
+
+        return $object;
     }
 
     public function fetchCurrentRelations(int $id): array
@@ -40,50 +44,6 @@ class Slider extends AbstractDb
             ->where('e.' . $this->getIdFieldName() . ' = :entity_id');
 
         return $connection->fetchAssoc($select, ['entity_id' => (int) $id]);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function load(AbstractModel $object, $value, $field = null)
-    {
-        return $this->entityManager->load($object, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function save(AbstractModel $object)
-    {
-        $this->entityManager->save($object);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete(AbstractModel $object)
-    {
-        $this->entityManager->delete($object);
-
-        return $this;
-    }
-
-    public function loadByIdentity(AbstractModel $object, string $identity): AbstractModel
-    {
-        $connection = $this->getConnection();
-        $select = $connection->select()
-            ->from($this->getMainTable())
-            ->where('identity = :identity');
-
-        $data = $connection->fetchRow($select, [':identity' => $identity]);
-
-        $object->setData($data);
-
-        return $object;
     }
 
     /**

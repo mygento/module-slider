@@ -22,7 +22,7 @@ use Mygento\Slider\Api\ProductSliderRepositoryInterface;
 use Mygento\Slider\Model\ResourceModel\ProductSlider\CollectionFactory;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class ProductSliderRepository implements ProductSliderRepositoryInterface
 {
