@@ -66,6 +66,8 @@ Mygento:
       Banner:
         api: true
         per_store: true
+        cacheable: true
+        cache_tag: 'mysl-b'
         columns:
           id:
             type: int

@@ -11,7 +11,8 @@ declare(strict_types=1);
 namespace Mygento\Slider\Model\Resolver\Slider;
 
 use Magento\Framework\GraphQl\Query\Resolver\IdentityInterface;
-use Mygento\Slider\Api\Data\SliderInterface;
+use Mygento\Slider\Api\Data\BannerInterface;
+use Mygento\Slider\Model\Slider;
 
 class Identity implements IdentityInterface
 {
@@ -24,9 +25,17 @@ class Identity implements IdentityInterface
         if (!isset($resolvedData['model'])) {
             return [];
         }
-        /** @var SliderInterface $slider */
-        $slider = $resolvedData['model'];
 
-        return $slider->getIdentities();
+        /** @var Slider $slider */
+        $slider = $resolvedData['model'];
+        $banners = $resolvedData['banners'] ?? [];
+        $result = $slider->getIdentities();
+        foreach ($banners as $b) {
+            if (isset($b['id'])) {
+                $result[] = sprintf('%s_%s', BannerInterface::CACHE_TAG, $b['id']);
+            }
+        }
+
+        return $result;
     }
 }

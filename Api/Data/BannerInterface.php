@@ -8,11 +8,14 @@
 
 namespace Mygento\Slider\Api\Data;
 
+use Magento\Framework\DataObject\IdentityInterface;
+
 /**
  * @api
  */
-interface BannerInterface
+interface BannerInterface extends IdentityInterface
 {
+    public const CACHE_TAG = 'mysl-b';
     public const ID = 'id';
     public const IS_ACTIVE = 'is_active';
     public const NAME = 'name';

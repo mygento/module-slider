@@ -114,7 +114,7 @@ type Query {
 
     productSlider(
         identity: String!,
-    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider")
+    ): ProductSlider @resolver(class: "Mygento\\Slider\\Model\\Resolver\\ProductSlider") @cache(cacheIdentity: "Mygento\\Slider\\Model\\Resolver\\ProductSlider\\Identity")
 }
 
 interface BannerEntity @typeResolver(class: "Mygento\\Slider\\Model\\TypeResolver\\Banner") {

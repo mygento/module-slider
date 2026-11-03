@@ -16,6 +16,11 @@ class Banner extends AbstractModel implements BannerInterface
     /** @inheritDoc */
     protected $_eventPrefix = 'mygento_slider_banner';
 
+    public function getIdentities(): array
+    {
+        return [self::CACHE_TAG . '_' . $this->getId()];
+    }
+
     /**
      * Get id
      */
