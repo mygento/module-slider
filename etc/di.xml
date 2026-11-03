@@ -102,6 +102,35 @@
         </arguments>
     </virtualType>
 
+    <!-- relations -->
+    <type name="Magento\Framework\EntityManager\MetadataPool">
+        <arguments>
+            <argument name="metadata" xsi:type="array">
+                <item name="Mygento\Slider\Api\Data\SliderInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">mygento_slider</item>
+                    <item name="identifierField" xsi:type="string">id</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\EntityManager\Operation\ExtensionPool">
+        <arguments>
+            <argument name="extensionActions" xsi:type="array">
+                <item name="Mygento\Slider\Api\Data\SliderInterface" xsi:type="array">
+                    <item name="read" xsi:type="array">
+                        <item name="itemsReader" xsi:type="string">Mygento\Slider\Model\ResourceModel\Slider\Relation\Items\ReadHandler</item>
+                    </item>
+                    <item name="create" xsi:type="array">
+                        <item name="itemsReader" xsi:type="string">Mygento\Slider\Model\ResourceModel\Slider\Relation\Items\SaveHandler</item>
+                    </item>
+                    <item name="update" xsi:type="array">
+                        <item name="itemsReader" xsi:type="string">Mygento\Slider\Model\ResourceModel\Slider\Relation\Items\SaveHandler</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- image common -->
     <virtualType name="Mygento\Slider\Model\BannerResizer" type="Mygento\ImageCommon\Model\Resizer">
         <arguments>

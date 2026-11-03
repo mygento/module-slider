@@ -21,7 +21,7 @@ class CategoryBannerIdentity implements IdentityInterface
      * @param array $resolvedData
      *
      * @return array|string[]
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function getIdentities(array $resolvedData): array
     {

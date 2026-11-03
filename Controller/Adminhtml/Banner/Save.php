@@ -38,8 +38,8 @@ class Save extends Banner
     /**
      * Save Banner action
      *
-     * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
+     * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
     public function execute(): ResultInterface
     {

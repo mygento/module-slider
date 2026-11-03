@@ -31,12 +31,12 @@ use Mygento\Slider\Api\Data\ProductSliderInterface;
 use Mygento\Slider\Model\Catalog\Sorting;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class ProductSliderBuilder
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         private Resizer $service,

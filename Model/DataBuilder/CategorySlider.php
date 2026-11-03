@@ -31,12 +31,12 @@ use Mygento\Slider\Model\Catalog\Sorting;
 use Mygento\Slider\Model\ProductSliderFactory;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class CategorySlider extends ProductSliderBuilder
 {
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         private CategoryRepositoryInterface $categoryRepository,
