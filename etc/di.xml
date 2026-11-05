@@ -101,7 +101,7 @@
             <argument name="sortDirection" xsi:type="const">\Magento\Framework\DB\Select::SQL_ASC</argument>
         </arguments>
     </virtualType>
-    
+
     <!-- relations -->
     <type name="Magento\Framework\EntityManager\MetadataPool">
         <arguments>

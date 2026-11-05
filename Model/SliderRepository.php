@@ -21,7 +21,7 @@ use Mygento\Slider\Api\SliderRepositoryInterface;
 use Mygento\Slider\Model\ResourceModel\Slider\CollectionFactory;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class SliderRepository implements SliderRepositoryInterface
 {

@@ -27,7 +27,7 @@ class Collection extends AbstractCollection
     protected $_idFieldName = BannerResource::TABLE_PRIMARY_KEY;
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         private MetadataPool $metadataPool,

@@ -27,14 +27,14 @@ use Mygento\Slider\Model\DataBuilder\ProductSliderBuilder;
 use Mygento\Slider\Model\ResourceModel;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class ProductSlider extends ProductsList
 {
     protected $_template = 'Mygento_Slider::product_slider.phtml';
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         protected ProductSliderBuilder $builder,

@@ -45,7 +45,7 @@ class Slider extends AbstractDb
     /**
      * @inheritDoc
      *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function load(AbstractModel $object, $value, $field = null)
     {

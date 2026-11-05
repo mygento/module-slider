@@ -22,7 +22,7 @@ use Mygento\Slider\Api\Data\BannerSearchResultsInterfaceFactory;
 use Mygento\Slider\Model\ResourceModel\Banner\CollectionFactory;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class BannerRepository implements BannerRepositoryInterface
 {

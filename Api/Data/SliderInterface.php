@@ -8,11 +8,14 @@
 
 namespace Mygento\Slider\Api\Data;
 
+use Magento\Framework\DataObject\IdentityInterface;
+
 /**
  * @api
  */
-interface SliderInterface
+interface SliderInterface extends IdentityInterface
 {
+    public const CACHE_TAG = 'mysl-sl';
     public const ID = 'id';
     public const IS_ACTIVE = 'active';
     public const IDENTITY = 'identity';
@@ -50,7 +53,7 @@ interface SliderInterface
      * Get identity
      * @return string
      */
-    public function getIdentity(): string;
+    public function getIdentity(): ?string;
 
     /**
      * Set identity

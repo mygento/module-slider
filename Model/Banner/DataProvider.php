@@ -25,7 +25,7 @@ class DataProvider extends ModifierPoolDataProvider
     private array $loadedData = [];
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings("PHPMD.ExcessiveParameterList")
      */
     public function __construct(
         private EntityResolverPool $poolResolver,

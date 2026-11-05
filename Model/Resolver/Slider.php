@@ -58,6 +58,7 @@ class Slider implements ResolverInterface
             'identity' => $slider->getIdentity(),
             'options' => $this->prepareOptions($slider->getOptionsList()),
             'banners' => $banners,
+            'model' => $slider,
         ];
     }
 

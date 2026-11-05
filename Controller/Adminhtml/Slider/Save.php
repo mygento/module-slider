@@ -36,8 +36,8 @@ class Save extends Slider
     /**
      * Save Slider action
      *
-     * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
+     * @SuppressWarnings("PHPMD.CyclomaticComplexity")
      */
     public function execute(): ResultInterface
     {

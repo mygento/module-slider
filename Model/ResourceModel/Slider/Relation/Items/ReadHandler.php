@@ -19,7 +19,7 @@ class ReadHandler implements ExtensionInterface
     ) {}
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      * @param SliderInterface $entity
      * @param array $arguments
      */
