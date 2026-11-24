@@ -110,6 +110,7 @@ class ProductSliderBuilder
         /** @var Collection $collection */
         $collection = $this->getBaseProductsCollection($slider);
         $conditions = $this->getSliderConditions($slider);
+        $collection->addMediaGalleryData();
         $conditions->collectValidatedAttributes($collection);
         $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
 
