@@ -95,7 +95,10 @@ class ProductSliderBuilder
             ->addMinimalPrice()
             ->addFinalPrice()
             ->addTaxPercents()
-            ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
+            ->addAttributeToSelect(array_merge(
+                $this->catalogConfig->getProductAttributes(),
+                ['price', 'special_price', 'special_from_date', 'special_to_date', 'tax_class_id'],
+            ))
             ->addUrlRewrite()
             ->addStoreFilter();
         $this->stock->addIsInStockFilterToCollection($collection);
@@ -110,7 +113,6 @@ class ProductSliderBuilder
         /** @var Collection $collection */
         $collection = $this->getBaseProductsCollection($slider);
         $conditions = $this->getSliderConditions($slider);
-        $collection->addMediaGalleryData();
         $conditions->collectValidatedAttributes($collection);
         $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
 
