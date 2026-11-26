@@ -13,6 +13,7 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\AttributeProcessor;
+use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\RequiredColumnsProcessor;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Mygento\Slider\Api\EntityResolverInterface;
@@ -26,6 +27,7 @@ class Product implements EntityResolverInterface
         private CollectionFactory $factory,
         private SearchCriteriaBuilder $searchCriteriaBuilder,
         private AttributeProcessor $attributeProcessor,
+        private RequiredColumnsProcessor $requiredColumnsProcessor,
     ) {}
 
     /**
@@ -64,14 +66,21 @@ class Product implements EntityResolverInterface
     {
         $result = [];
         $collection = $this->getCollection($ids);
+        $collection->setStoreId($storeId);
         $urls = $this->resolveUrl($ids, $storeId);
         $requestedEntityFields = $requestedFields['product']  ?? [];
         $attributeNames = array_keys($requestedEntityFields);
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         if ($attributeNames) {
+            $searchCriteria = $this->searchCriteriaBuilder->create();
             $this->attributeProcessor->process(
                 $collection,
-                $this->searchCriteriaBuilder->create(),
+                $searchCriteria,
+                $attributeNames,
+            );
+            $this->requiredColumnsProcessor->process(
+                $collection,
+                $searchCriteria,
                 $attributeNames,
             );
         }

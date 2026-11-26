@@ -95,10 +95,7 @@ class ProductSliderBuilder
             ->addMinimalPrice()
             ->addFinalPrice()
             ->addTaxPercents()
-            ->addAttributeToSelect(array_merge(
-                $this->catalogConfig->getProductAttributes(),
-                ['price', 'special_price', 'special_from_date', 'special_to_date', 'tax_class_id'],
-            ))
+            ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
             ->addUrlRewrite()
             ->addStoreFilter();
         $this->stock->addIsInStockFilterToCollection($collection);
