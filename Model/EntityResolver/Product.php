@@ -69,13 +69,11 @@ class Product implements EntityResolverInterface
         $requestedEntityFields = $requestedFields['product'] ?? [];
         $attributeNames = array_keys($requestedEntityFields);
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
-        if ($attributeNames) {
-            $collection = $this->collectionProcessor->process(
-                $collection,
-                $this->searchCriteriaBuilder->create(),
-                $attributeNames,
-            );
-        }
+        $collection = $this->collectionProcessor->process(
+            $collection,
+            $this->searchCriteriaBuilder->create(),
+            $attributeNames,
+        );
 
         /** @var ProductInterface $product */
         foreach ($collection as $product) {
