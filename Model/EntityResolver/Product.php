@@ -12,11 +12,10 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\AttributeProcessor;
-use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\RequiredColumnsProcessor;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\ResourceConnection;
 use Mygento\Slider\Api\EntityResolverInterface;
+use Mygento\Slider\Model\Resolver\DataProvider\SliderProductsCollectionProcessor;
 
 class Product implements EntityResolverInterface
 {
@@ -26,8 +25,7 @@ class Product implements EntityResolverInterface
         private ResourceConnection $resourceConnection,
         private CollectionFactory $factory,
         private SearchCriteriaBuilder $searchCriteriaBuilder,
-        private AttributeProcessor $attributeProcessor,
-        private RequiredColumnsProcessor $requiredColumnsProcessor,
+        private SliderProductsCollectionProcessor $collectionProcessor,
     ) {}
 
     /**
@@ -68,22 +66,17 @@ class Product implements EntityResolverInterface
         $collection = $this->getCollection($ids);
         $collection->setStoreId($storeId);
         $urls = $this->resolveUrl($ids, $storeId);
-        $requestedEntityFields = $requestedFields['product']  ?? [];
+        $requestedEntityFields = $requestedFields['product'] ?? [];
         $attributeNames = array_keys($requestedEntityFields);
         $collection->addAttributeToFilter('status', Status::STATUS_ENABLED);
         if ($attributeNames) {
-            $searchCriteria = $this->searchCriteriaBuilder->create();
-            $this->attributeProcessor->process(
+            $collection = $this->collectionProcessor->process(
                 $collection,
-                $searchCriteria,
-                $attributeNames,
-            );
-            $this->requiredColumnsProcessor->process(
-                $collection,
-                $searchCriteria,
+                $this->searchCriteriaBuilder->create(),
                 $attributeNames,
             );
         }
+
         /** @var ProductInterface $product */
         foreach ($collection as $product) {
             $id = (string) $product->getId();
