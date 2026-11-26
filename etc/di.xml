@@ -337,4 +337,13 @@
             <argument name="builder" xsi:type="object">Mygento\Slider\Model\DataBuilder\CategorySlider</argument>
         </arguments>
     </type>
+
+    <type name="Mygento\Slider\Model\Resolver\DataProvider\SliderProductsCollectionProcessor">
+        <arguments>
+            <argument name="collectionProcessors" xsi:type="array">
+                <item name="attributes" xsi:type="object">Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\AttributeProcessor</item>
+                <item name="required" xsi:type="object">Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessor\RequiredColumnsProcessor</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

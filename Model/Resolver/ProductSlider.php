@@ -59,13 +59,19 @@ class ProductSlider implements ResolverInterface
             'identity' => $slider->getIdentity(),
             'options' => $options['options'],
             'parameters' => $options['parameters'],
-            'items' => $this->getProductModels($slider),
+            'items' => $this->getProductModels(
+                $slider,
+                $info->getFieldSelection(3), //products depth
+            ),
         ];
     }
 
-    private function getProductModels(ProductSliderInterface $slider): array
+    private function getProductModels(ProductSliderInterface $slider, array $requestedFields): array
     {
         $productsCollection = $this->builder->getCollection($slider);
+        if (isset($requestedFields['items']['product']['media_gallery'])) {
+            $productsCollection->addMediaGalleryData();
+        }
         $result = [];
         /** @var ProductInterface $product */
         foreach ($productsCollection as $product) {
